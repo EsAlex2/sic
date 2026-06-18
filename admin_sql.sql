@@ -69,7 +69,6 @@ CREATE TABLE unexca.requisitos (
 CREATE TABLE unexca.modulos (
     id_modulo SERIAL PRIMARY KEY,
     nombre_modulo VARCHAR(50) UNIQUE NOT NULL, 
-    icono VARCHAR(50), 
     orden INTEGER DEFAULT 0, 
     activo BOOLEAN DEFAULT TRUE,
     creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
