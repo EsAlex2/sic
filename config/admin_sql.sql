@@ -11,14 +11,14 @@ CREATE TABLE unexca.estatus (
     creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE unexca.sedes_unexca (
+CREATE TABLE unexca.sedes_unexca ( -- unexca
     id_sede SERIAL PRIMARY KEY,
     nombre_sede VARCHAR(100) NOT NULL,
     correo_institucional VARCHAR(100) UNIQUE NOT NULL,
     direccion TEXT
 ); 
 
-CREATE TABLE unexca.trayectos (
+CREATE TABLE unexca.trayectos ( --unexca
     id_trayecto SERIAL PRIMARY KEY,
     cod_trayecto VARCHAR(10) NOT NULL,
     descripcion TEXT,
@@ -43,14 +43,14 @@ CREATE TABLE unexca.secciones (
     CONSTRAINT check_capacidad_max CHECK (capacidad_max >= 0 AND capacidad_max <= 40)
 );
 
-CREATE TABLE unexca.turnos (
+CREATE TABLE unexca.turnos ( --unexca
     id_turno SERIAL PRIMARY KEY,
     turno VARCHAR(50) NOT NULL,
     descripcion TEXT,
     creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE unexca.aulas (
+CREATE TABLE unexca.aulas ( --unexca
     id_aula SERIAL PRIMARY KEY,
     piso VARCHAR(15) NOT NULL,
     nro_aula VARCHAR(15) NOT NULL,
@@ -100,7 +100,7 @@ CREATE TABLE unexca.permisos (
     id_modulos INTEGER REFERENCES unexca.modulos(id_modulo) ON DELETE CASCADE
 );
 
-CREATE TABLE unexca.pnf (
+CREATE TABLE unexca.pnf ( --unexca
     id_pnf SERIAL PRIMARY KEY,
     id_sede INTEGER REFERENCES unexca.sedes_unexca(id_sede) ON DELETE CASCADE,
     cod_pnf VARCHAR(20) NOT NULL,
