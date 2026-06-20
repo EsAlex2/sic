@@ -36,6 +36,7 @@ function cargarTrayectos()
         $conexion->commit();
         echo $mensaje;
     } catch (PDOException $e) {
+        $conexion->rollBack();
         echo "Error al insertar: " . $e->getMessage();
     }
 }
