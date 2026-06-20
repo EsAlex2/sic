@@ -26,8 +26,6 @@ class Conexion {
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_EMULATE_PREPARES => false,
             ]);
-
-            echo "Conexion exitosa a la base de datos";
         } catch (PDOException $e) {
             die("Error de conexión a la base de datos: " . $e->getMessage() . " -- DSN: " . var_export(isset($dsn) ? $dsn : null, true));
         }

@@ -8,9 +8,7 @@ require_once __DIR__ . '/../init.php';
 function cargarSedes()
 {
     $data = [
-        ['nombre_sede' => 'Sede Altagracia', 'correo_institucional' => 'sede.altagracia@unexca.edu.ve', 'direccion' => 'Esquina de Mijares a Altagracia, Parroquia Altagracia, Caracas.'],
-        ['nombre_sede' => 'Sede La Urbina', 'correo_institucional' => 'sede.laurbina@unexca.edu.ve', 'direccion' => 'Calle 3-B con Calle 2-B, Urbanización La Urbina, Parroquia Petare.'],
-        ['nombre_sede' => 'Sede La floresta (Sede principal)', 'correo_institucional' => 'sede.lafloresta@unexca.edu.ve', 'direccion' => 'La Floresta, Ave. principal, cruce con Ave. Francisco de Miranda.']
+        ['turno' => 'Matutino', 'descripcion' => '']
     ];
 
     $db = new Conexion();
