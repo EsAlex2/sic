@@ -1,10 +1,10 @@
-CREATE TABLE unexca.tipos_usuario (
-    id_tipo SERIAL PRIMARY KEY,
+CREATE TABLE admin.roles ( --admin
+    id SERIAL PRIMARY KEY,
     nombre_tipo VARCHAR(50) UNIQUE NOT NULL,
     descripcion TEXT
 );
 
-CREATE TABLE unexca.estatus (
+CREATE TABLE unexca.estatus ( --admin
     id_estatus SERIAL PRIMARY KEY,
     nombre_estatus VARCHAR (100) NOT NULL,
     descripcion TEXT,
@@ -66,7 +66,7 @@ CREATE TABLE unexca.requisitos (
     es_obligatorio BOOLEAN DEFAULT TRUE
 );
 
-CREATE TABLE unexca.modulos (
+CREATE TABLE unexca.modulos ( --admin
     id_modulo SERIAL PRIMARY KEY,
     nombre_modulo VARCHAR(50) UNIQUE NOT NULL, 
     orden INTEGER DEFAULT 0, 
@@ -93,11 +93,12 @@ CREATE TABLE unexca.configuraciones (
     actualizado_en TIMESTAMP
 );
 
-CREATE TABLE unexca.permisos (
+CREATE TABLE unexca.permisos ( --admin
     id_permiso SERIAL PRIMARY KEY,
     nombre_permiso VARCHAR(100) UNIQUE NOT NULL,
     descripcion TEXT,
-    id_modulos INTEGER REFERENCES unexca.modulos(id_modulo) ON DELETE CASCADE
+    id_modulos INTEGER REFERENCES unexca.modulos(id_modulo) ON DELETE CASCADE,
+    creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE unexca.pnf ( --unexca
@@ -130,7 +131,7 @@ CREATE TABLE unexca.usuarios (
 	ultimo_login TIMESTAMP
 );
 
-CREATE TABLE unexca.datos_personas (
+CREATE TABLE unexca.datos_personas ( --admin
     id_persona SERIAL PRIMARY KEY,
     id_estatus INTEGER REFERENCES unexca.estatus(id_estatus) ON DELETE CASCADE,
     cedula_identidad INT UNIQUE NOT NULL,
@@ -146,8 +147,8 @@ CREATE TABLE unexca.datos_personas (
     actualizado_en TIMESTAMP
 );
 
-CREATE TABLE unexca.roles_permisos (
-    id_tipo_usuario INTEGER REFERENCES unexca.tipos_usuario(id_tipo) ON DELETE CASCADE,
+CREATE TABLE admin.roles ( --admin
+    id_rol INTEGER REFERENCES unexca.roles(id) ON DELETE CASCADE,
     id_permiso INTEGER REFERENCES unexca.permisos(id_permiso) ON DELETE CASCADE,
     id_usuario INTEGER REFERENCES unexca.usuarios(id_usuario) ON DELETE CASCADE,
     PRIMARY KEY (id_tipo_usuario, id_permiso, id_usuario)
@@ -214,7 +215,7 @@ CREATE TABLE unexca.horarios (
     creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Corregido: Referencias ajustadas a nombres de tablas reales
+
 CREATE TABLE unexca.inscripcion_nue_ingreso (
     id_inscripcion SERIAL PRIMARY KEY,
     id_estudiante INTEGER REFERENCES unexca.datos_personas(id_persona) ON DELETE CASCADE,

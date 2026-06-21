@@ -37,3 +37,10 @@ CREATE TABLE unexca.pnf (
     unidad_total_creditos INTEGER NOT NULL,
     creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE unexca.office (
+    id SERIAL PRIMARY KEY,
+    name_office VARCHAR(60),
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
