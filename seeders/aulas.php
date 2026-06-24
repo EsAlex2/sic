@@ -94,7 +94,7 @@ function cargarAulas()
         foreach ($data as $aulas) {
             $stmt->execute([
                 ':piso' => $aulas['piso'],
-                ':nro' => $aulas['nro_piso'],
+                ':nro' => $aulas['nro_aula'],
                 ':nom' => $aulas['nombre_aula']
             ]);
         }

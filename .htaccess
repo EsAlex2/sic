@@ -1,0 +1,9 @@
+RewriteEngine On
+RewriteBase /sic/
+
+# No reescribir archivos y directorios reales (CSS, JS, imágenes)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Redirigir todo al front controller
+RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
