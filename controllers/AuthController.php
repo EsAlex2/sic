@@ -58,11 +58,12 @@ class AuthController
             return;
         }
 
-        // Buscar usuario con su tipo
-        $sql = "SELECT u.*, tu.nombre_tipo,
+        // Buscar usuario con su tipo y estatus
+        $sql = "SELECT u.*, tu.nombre_tipo, e.nombre_estatus,
                        dp.nombres, dp.apellidos
                 FROM unexca.usuarios u
                 JOIN unexca.tipos_usuario tu ON tu.id_tipo = u.id_tipo
+                JOIN unexca.estatus e ON e.id_estatus = u.id_estatus
                 LEFT JOIN unexca.datos_personas dp ON dp.id_persona = u.id_persona
                 WHERE u.cedula = :cedula
                 LIMIT 1";
@@ -73,6 +74,13 @@ class AuthController
 
         if (!$usuario) {
             setFlash('error', 'Cédula o contraseña incorrectos.');
+            redirect('login');
+            return;
+        }
+
+        // Verificar si la cuenta está inactiva o suspendida
+        if ($usuario['nombre_estatus'] !== 'Activo') {
+            setFlash('error', 'Tu cuenta se encuentra ' . strtolower($usuario['nombre_estatus']) . '. Por favor, contacta a un administrador.');
             redirect('login');
             return;
         }

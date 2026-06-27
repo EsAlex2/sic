@@ -87,6 +87,178 @@ class PersonaController
         redirect('admin/personas');
     }
 
+    public function editar(int $id): void
+    {
+        $stmt = $this->conexion->prepare("
+            SELECT dp.*, e.nombre_estatus
+            FROM unexca.datos_personas dp
+            JOIN unexca.estatus e ON e.id_estatus = dp.id_estatus
+            WHERE dp.id_persona = :id
+        ");
+        $stmt->execute([':id' => $id]);
+        $persona = $stmt->fetch();
+
+        if (!$persona) {
+            setFlash('error', 'Persona no encontrada.');
+            redirect('admin/personas');
+            return;
+        }
+
+        renderView('admin/persona_editar', [
+            'titulo' => 'Editar Persona',
+            'persona' => $persona,
+            'flash' => getFlash()
+        ]);
+    }
+
+    public function actualizar(int $id): void
+    {
+        $nombres = $_POST['nombres'] ?? '';
+        $apellidos = $_POST['apellidos'] ?? '';
+        $genero = $_POST['genero'] ?? '';
+        $fecha_nac = $_POST['fecha_nacimiento'] ?? '';
+        $correo = $_POST['correo_personal'] ?? '';
+        $telefono = $_POST['telefono_personal'] ?? '';
+        $direccion = $_POST['direccion_habitacion'] ?? '';
+
+        if (empty($nombres) || empty($apellidos) || empty($correo)) {
+            setFlash('error', 'Faltan campos obligatorios.');
+            redirect('admin/personas/editar/' . $id);
+            return;
+        }
+
+        try {
+            $stmt = $this->conexion->prepare("
+                UPDATE unexca.datos_personas SET
+                    nombres = :nombres,
+                    apellidos = :apellidos,
+                    genero = :genero,
+                    fecha_nacimiento = :fecha_nac,
+                    correo_personal = :correo,
+                    telefono_personal = :telefono,
+                    direccion_habitacion = :direccion
+                WHERE id_persona = :id
+            ");
+            $stmt->execute([
+                ':nombres' => $nombres,
+                ':apellidos' => $apellidos,
+                ':genero' => $genero,
+                ':fecha_nac' => $fecha_nac,
+                ':correo' => $correo,
+                ':telefono' => $telefono,
+                ':direccion' => $direccion,
+                ':id' => $id
+            ]);
+
+            setFlash('success', 'Datos actualizados exitosamente.');
+        } catch (PDOException $e) {
+            setFlash('error', 'Error al actualizar: ' . $e->getMessage());
+        }
+
+        redirect('admin/personas');
+    }
+
+    public function eliminar(int $id): void
+    {
+        try {
+            // Obtener id_estatus de 'Inactivo'
+            $stmtEstatus = $this->conexion->prepare("SELECT id_estatus FROM unexca.estatus WHERE nombre_estatus = 'Inactivo' LIMIT 1");
+            $stmtEstatus->execute();
+            $estatus = $stmtEstatus->fetch();
+
+            if (!$estatus) {
+                setFlash('error', 'No se encontró el estatus "Inactivo" en el sistema.');
+                redirect('admin/personas');
+                return;
+            }
+
+            $stmt = $this->conexion->prepare("
+                UPDATE unexca.datos_personas
+                SET id_estatus = :id_estatus
+                WHERE id_persona = :id
+            ");
+            $stmt->execute([
+                ':id_estatus' => $estatus['id_estatus'],
+                ':id' => $id
+            ]);
+
+            setFlash('success', 'Persona desactivada exitosamente.');
+        } catch (PDOException $e) {
+            setFlash('error', 'Error al desactivar: ' . $e->getMessage());
+        }
+
+        redirect('admin/personas');
+    }
+
+    public function activar(int $id): void
+    {
+        try {
+            // Obtener id_estatus de 'Activo'
+            $stmtEstatus = $this->conexion->prepare("SELECT id_estatus FROM unexca.estatus WHERE nombre_estatus = 'Activo' LIMIT 1");
+            $stmtEstatus->execute();
+            $estatus = $stmtEstatus->fetch();
+
+            if (!$estatus) {
+                setFlash('error', 'No se encontró el estatus "Activo" en el sistema.');
+                redirect('admin/personas');
+                return;
+            }
+
+            $stmt = $this->conexion->prepare("
+                UPDATE unexca.datos_personas
+                SET id_estatus = :id_estatus
+                WHERE id_persona = :id
+            ");
+            $stmt->execute([
+                ':id_estatus' => $estatus['id_estatus'],
+                ':id' => $id
+            ]);
+
+            setFlash('success', 'Persona activada exitosamente.');
+        } catch (PDOException $e) {
+            setFlash('error', 'Error al activar: ' . $e->getMessage());
+        }
+
+        redirect('admin/personas');
+    }
+
+    public function ver(int $id): void
+    {
+        $stmt = $this->conexion->prepare("
+            SELECT dp.*, e.nombre_estatus
+            FROM unexca.datos_personas dp
+            JOIN unexca.estatus e ON e.id_estatus = dp.id_estatus
+            WHERE dp.id_persona = :id
+        ");
+        $stmt->execute([':id' => $id]);
+        $persona = $stmt->fetch();
+
+        if (!$persona) {
+            setFlash('error', 'Persona no encontrada.');
+            redirect('admin/personas');
+            return;
+        }
+
+        // Buscar si tiene usuario asociado
+        $stmtUsuario = $this->conexion->prepare("
+            SELECT u.id_usuario, u.cedula, u.correo_institucional, 
+                   t.nombre_tipo, eu.nombre_estatus as estatus_usuario
+            FROM unexca.usuarios u
+            JOIN unexca.tipos_usuario t ON t.id_tipo = u.id_tipo
+            JOIN unexca.estatus eu ON eu.id_estatus = u.id_estatus
+            WHERE u.id_persona = :id
+        ");
+        $stmtUsuario->execute([':id' => $id]);
+        $usuario = $stmtUsuario->fetch();
+
+        renderView('admin/persona_detalle', [
+            'titulo' => 'Detalle de Persona',
+            'persona' => $persona,
+            'usuario' => $usuario ?: null,
+            'flash' => getFlash()
+        ]);
+    }
+
     public function buscarAjax(int $cedula): void
     {
         header('Content-Type: application/json');
@@ -106,12 +278,29 @@ class PersonaController
                 exit;
             }
 
-            // Verificar si ya tiene usuario
-            $checkU = $this->conexion->prepare("SELECT id_usuario FROM unexca.usuarios WHERE id_persona = :id");
-            $checkU->execute([':id' => $persona['id_persona']]);
-            if ($checkU->fetch()) {
-                echo json_encode(['success' => false, 'message' => 'Esta persona ya tiene un usuario asignado.']);
-                exit;
+            $context = $_GET['context'] ?? 'usuario';
+
+            if ($context === 'usuario') {
+                $checkU = $this->conexion->prepare("SELECT id_usuario FROM unexca.usuarios WHERE id_persona = :id");
+                $checkU->execute([':id' => $persona['id_persona']]);
+                if ($checkU->fetch()) {
+                    echo json_encode(['success' => false, 'message' => 'Esta persona ya tiene un usuario asignado.']);
+                    exit;
+                }
+            } elseif ($context === 'estudiante') {
+                $checkE = $this->conexion->prepare("SELECT id_estudiante FROM unexca.datos_estudiantes WHERE id_persona = :id");
+                $checkE->execute([':id' => $persona['id_persona']]);
+                if ($checkE->fetch()) {
+                    echo json_encode(['success' => false, 'message' => 'Esta persona ya está registrada como estudiante.']);
+                    exit;
+                }
+            } elseif ($context === 'docente') {
+                $checkD = $this->conexion->prepare("SELECT id_docente FROM unexca.datos_docentes WHERE id_persona = :id");
+                $checkD->execute([':id' => $persona['id_persona']]);
+                if ($checkD->fetch()) {
+                    echo json_encode(['success' => false, 'message' => 'Esta persona ya está registrada como docente.']);
+                    exit;
+                }
             }
 
             echo json_encode([

@@ -1,7 +1,11 @@
-<div class="page-header">
+<div class="flex items-center justify-between mb-8">
     <div>
-        <h1>Histórico Académico</h1>
-        <p class="page-subtitle">Récord de calificaciones históricas</p>
+        <h1 class="text-2xl font-bold text-slate-900 dark:text-slate-100">Histórico Académico</h1>
+        <p class="text-sm text-slate-500 dark:text-slate-500 mt-1">Récord completo de calificaciones</p>
     </div>
 </div>
-<div class="card"><div class="card-body text-center"><h3>Módulo en construcción</h3></div></div>
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 text-center">
+    <div class="text-4xl mb-3 opacity-40">📜</div>
+    <h3 class="text-lg font-semibold text-slate-700 dark:text-slate-300 mb-2">Módulo en construcción</h3>
+    <p class="text-sm text-slate-500 dark:text-slate-500">Historial académico completo con todos los períodos cursados.</p>
+</div>

@@ -1,92 +1,95 @@
-<div class="page-header">
-    <div>
-        <h1>Panel de Administración</h1>
-        <p class="page-subtitle">Vista general del sistema académico UNEXCA</p>
+<div class="animate-fade">
+    <!-- Page Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">Panel de Administración</h1>
+        <p class="text-sm text-slate-500 dark:text-slate-500 mt-1">Vista general del sistema académico UNEXCA</p>
     </div>
-</div>
 
-<div class="stats-grid">
-    <div class="stat-card blue">
-        <div class="stat-icon blue">🎓</div>
-        <div class="stat-content">
-            <div class="stat-value"><?= $stats['total_estudiantes'] ?></div>
-            <div class="stat-label">Estudiantes</div>
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
+        <!-- Estudiantes -->
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 flex items-start gap-4 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-200 stat-border-blue">
+            <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-2xl">🎓</div>
+            <div>
+                <div class="text-3xl font-extrabold text-slate-900 dark:text-slate-100"><?= $stats['total_estudiantes'] ?></div>
+                <div class="text-sm text-slate-500 dark:text-slate-500 mt-0.5">Estudiantes</div>
+            </div>
         </div>
-    </div>
-    <div class="stat-card emerald">
-        <div class="stat-icon emerald">👨‍🏫</div>
-        <div class="stat-content">
-            <div class="stat-value"><?= $stats['total_docentes'] ?></div>
-            <div class="stat-label">Docentes</div>
+        <!-- Docentes -->
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 flex items-start gap-4 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-200 stat-border-emerald">
+            <div class="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center text-2xl">👨‍🏫</div>
+            <div>
+                <div class="text-3xl font-extrabold text-slate-900 dark:text-slate-100"><?= $stats['total_docentes'] ?></div>
+                <div class="text-sm text-slate-500 dark:text-slate-500 mt-0.5">Docentes</div>
+            </div>
         </div>
-    </div>
-    <div class="stat-card purple">
-        <div class="stat-icon purple">👥</div>
-        <div class="stat-content">
-            <div class="stat-value"><?= $stats['total_usuarios'] ?></div>
-            <div class="stat-label">Usuarios del Sistema</div>
+        <!-- Usuarios -->
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 flex items-start gap-4 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-200 stat-border-purple">
+            <div class="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center text-2xl">👥</div>
+            <div>
+                <div class="text-3xl font-extrabold text-slate-900 dark:text-slate-100"><?= $stats['total_usuarios'] ?></div>
+                <div class="text-sm text-slate-500 dark:text-slate-500 mt-0.5">Usuarios del Sistema</div>
+            </div>
         </div>
-    </div>
-    <div class="stat-card amber">
-        <div class="stat-icon amber">📅</div>
-        <div class="stat-content">
-            <div class="stat-value"><?= $stats['periodos_activos'] ?></div>
-            <div class="stat-label">Períodos Activos</div>
+        <!-- Períodos Activos -->
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 flex items-start gap-4 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-200 stat-border-amber">
+            <div class="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center text-2xl">📅</div>
+            <div>
+                <div class="text-3xl font-extrabold text-slate-900 dark:text-slate-100"><?= $stats['periodos_activos'] ?></div>
+                <div class="text-sm text-slate-500 dark:text-slate-500 mt-0.5">Períodos Activos</div>
+            </div>
         </div>
-    </div>
-    <div class="stat-card cyan">
-        <div class="stat-icon cyan">📋</div>
-        <div class="stat-content">
-            <div class="stat-value"><?= $stats['total_cargas'] ?></div>
-            <div class="stat-label">Cargas Académicas</div>
+        <!-- Cargas Académicas -->
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 flex items-start gap-4 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-200 stat-border-cyan">
+            <div class="w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center text-2xl">📋</div>
+            <div>
+                <div class="text-3xl font-extrabold text-slate-900 dark:text-slate-100"><?= $stats['total_cargas'] ?></div>
+                <div class="text-sm text-slate-500 dark:text-slate-500 mt-0.5">Cargas Académicas</div>
+            </div>
         </div>
-    </div>
-    <div class="stat-card red">
-        <div class="stat-icon red">📚</div>
-        <div class="stat-content">
-            <div class="stat-value"><?= $stats['total_pnf'] ?></div>
-            <div class="stat-label">Programas (PNF)</div>
-        </div>
-    </div>
-</div>
-
-<div class="content-grid">
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">⚡ Acciones Rápidas</h3>
-        </div>
-        <div class="card-body">
-            <div class="d-flex gap-2" style="flex-wrap: wrap;">
-                <a href="<?= url('admin/usuarios') ?>" class="btn btn-primary">👥 Gestionar Usuarios</a>
-                <a href="<?= url('admin/periodos') ?>" class="btn btn-outline">📅 Períodos</a>
-                <a href="<?= url('admin/cargas') ?>" class="btn btn-outline">📋 Cargas</a>
-                <a href="<?= url('reparaciones') ?>" class="btn btn-outline">🔄 Reparaciones</a>
-                <a href="<?= url('finanzas/pagos') ?>" class="btn btn-outline">💰 Finanzas</a>
+        <!-- Programas PNF -->
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 flex items-start gap-4 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-200 stat-border-red">
+            <div class="w-12 h-12 rounded-xl bg-red-500/10 flex items-center justify-center text-2xl">📚</div>
+            <div>
+                <div class="text-3xl font-extrabold text-slate-900 dark:text-slate-100"><?= $stats['total_pnf'] ?></div>
+                <div class="text-sm text-slate-500 dark:text-slate-500 mt-0.5">Programas (PNF)</div>
             </div>
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">📋 Información del Sistema</h3>
+    <!-- Quick Actions & System Info -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <!-- Quick Actions -->
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6">
+            <h3 class="text-base font-semibold text-slate-900 dark:text-slate-100 mb-4">⚡ Acciones Rápidas</h3>
+            <div class="flex flex-wrap gap-2.5">
+                <a href="<?= url('admin/usuarios') ?>" class="bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl px-5 py-2.5 shadow-lg shadow-blue-600/25 hover:shadow-blue-600/40 hover:-translate-y-0.5 transition-all text-sm">👥 Gestionar Usuarios</a>
+                <a href="<?= url('admin/periodos') ?>" class="border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400 rounded-xl px-4 py-2 hover:bg-slate-50 dark:bg-slate-800 hover:text-slate-800 dark:text-slate-200 transition text-sm">📅 Períodos</a>
+                <a href="<?= url('admin/cargas') ?>" class="border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400 rounded-xl px-4 py-2 hover:bg-slate-50 dark:bg-slate-800 hover:text-slate-800 dark:text-slate-200 transition text-sm">📋 Cargas</a>
+                <a href="<?= url('reparaciones') ?>" class="border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400 rounded-xl px-4 py-2 hover:bg-slate-50 dark:bg-slate-800 hover:text-slate-800 dark:text-slate-200 transition text-sm">🔄 Reparaciones</a>
+                <a href="<?= url('finanzas/pagos') ?>" class="border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400 rounded-xl px-4 py-2 hover:bg-slate-50 dark:bg-slate-800 hover:text-slate-800 dark:text-slate-200 transition text-sm">💰 Finanzas</a>
+            </div>
         </div>
-        <div class="card-body">
-            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-                <div class="d-flex justify-between align-center">
-                    <span class="text-secondary">Versión</span>
-                    <span class="badge badge-info">SIC v1.0.0</span>
+
+        <!-- System Info -->
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6">
+            <h3 class="text-base font-semibold text-slate-900 dark:text-slate-100 mb-4">📋 Información del Sistema</h3>
+            <div class="flex flex-col gap-3">
+                <div class="flex items-center justify-between">
+                    <span class="text-sm text-slate-600 dark:text-slate-400">Versión</span>
+                    <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-blue-500/10 text-blue-400">SIC v1.0.0</span>
                 </div>
-                <div class="d-flex justify-between align-center">
-                    <span class="text-secondary">Base de Datos</span>
-                    <span class="badge badge-success">PostgreSQL 18</span>
+                <div class="flex items-center justify-between">
+                    <span class="text-sm text-slate-600 dark:text-slate-400">Base de Datos</span>
+                    <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-emerald-500/10 text-emerald-400">PostgreSQL 18</span>
                 </div>
-                <div class="d-flex justify-between align-center">
-                    <span class="text-secondary">PHP</span>
-                    <span class="badge badge-purple">v<?= phpversion() ?></span>
+                <div class="flex items-center justify-between">
+                    <span class="text-sm text-slate-600 dark:text-slate-400">PHP</span>
+                    <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-purple-500/10 text-purple-400">v<?= phpversion() ?></span>
                 </div>
-                <div class="d-flex justify-between align-center">
-                    <span class="text-secondary">Servidor</span>
-                    <span class="badge badge-warning">Apache/XAMPP</span>
+                <div class="flex items-center justify-between">
+                    <span class="text-sm text-slate-600 dark:text-slate-400">Servidor</span>
+                    <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-amber-500/10 text-amber-400">Apache/XAMPP</span>
                 </div>
             </div>
         </div>

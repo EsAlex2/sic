@@ -35,6 +35,8 @@ function cargarEstatus()
         ['nombre_estatus' => 'Regular', 'descripcion' => 'Estudiante con condición regular dentro de la institución'],
         ['nombre_estatus' => 'Nuevo Ingreso', 'descripcion' => 'Estudiante que ingresa por primera vez a la institución'],
         ['nombre_estatus' => 'Egresado', 'descripcion' => 'Estudiante que ha culminado su programa de formación'],
+        ['nombre_estatus' => 'Cursando', 'descripcion' => 'Estudiante que está cursando actualmente'],
+        
     ];
 
     $db = new Conexion();

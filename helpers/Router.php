@@ -32,6 +32,22 @@ class Router
         $this->addRoute('POST', $path, $callback, $middleware);
     }
 
+    /**
+     * Registra una ruta PUT
+     */
+    public function put(string $path, array $callback, array $middleware = []): void
+    {
+        $this->addRoute('PUT', $path, $callback, $middleware);
+    }
+
+    /**
+     * Registra una ruta DELETE
+     */
+    public function delete(string $path, array $callback, array $middleware = []): void
+    {
+        $this->addRoute('DELETE', $path, $callback, $middleware);
+    }
+
     private function addRoute(string $method, string $path, array $callback, array $middleware): void
     {
         $this->routes[] = [

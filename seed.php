@@ -95,9 +95,9 @@ try {
             ':nombres'     => 'Alex Jonfranc',
             ':apellidos'   => 'Madrid Marin',
             ':genero'      => 'Masculino',
-            ':nacimiento'  => '2001-01-28',
+            ':nacimiento'  => '1999-01-28',
             ':correo'      => 'alexmadrid326@gmail.com',
-            ':telefono'    => '0414-0000000',
+            ':telefono'    => '0414-3770143',
             ':direccion'   => 'Caracas, Venezuela',
         ]);
         $persona = $stmtPersona->fetch();

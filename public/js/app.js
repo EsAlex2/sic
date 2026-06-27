@@ -1,43 +1,137 @@
-/* SIC — App JavaScript */
+/* SIC — App JavaScript (Tailwind v4 compatible) */
 document.addEventListener('DOMContentLoaded', function() {
-    // Sidebar toggle
+    // Sidebar toggle (mobile/desktop)
     const toggle = document.getElementById('sidebar-toggle');
     const sidebar = document.getElementById('sidebar');
+    const main = document.getElementById('main-content');
     if (toggle && sidebar) {
-        toggle.addEventListener('click', () => sidebar.classList.toggle('open'));
+        toggle.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+            if (main) {
+                // If the sidebar is closed (has -translate-x-full), we remove margin
+                if (sidebar.classList.contains('-translate-x-full')) {
+                    main.classList.remove('ml-64');
+                    main.classList.add('ml-0');
+                } else {
+                    main.classList.add('ml-64');
+                    main.classList.remove('ml-0');
+                }
+            }
+        });
     }
 
-    // Auto-dismiss alerts after 5s
-    document.querySelectorAll('.alert').forEach(alert => {
+    // Auto-dismiss flash alerts after 5s
+    const flashAlert = document.getElementById('flash-alert');
+    if (flashAlert) {
         setTimeout(() => {
-            alert.style.opacity = '0';
-            alert.style.transform = 'translateY(-10px)';
-            setTimeout(() => alert.remove(), 300);
+            flashAlert.style.opacity = '0';
+            flashAlert.style.transform = 'translateY(-10px)';
+            flashAlert.style.transition = 'all 0.3s ease';
+            setTimeout(() => flashAlert.remove(), 300);
         }, 5000);
-    });
+    }
 
-    // Animate stats cards on scroll
+    // Intersection Observer for card animations
     const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
+        entries.forEach((entry, i) => {
             if (entry.isIntersecting) {
+                entry.target.style.transitionDelay = `${i * 50}ms`;
                 entry.target.style.opacity = '1';
                 entry.target.style.transform = 'translateY(0)';
             }
         });
     }, { threshold: 0.1 });
 
-    document.querySelectorAll('.stat-card, .card').forEach(el => {
+    document.querySelectorAll('[data-animate]').forEach(el => {
         el.style.opacity = '0';
-        el.style.transform = 'translateY(20px)';
-        el.style.transition = 'all 0.5s ease';
+        el.style.transform = 'translateY(16px)';
+        el.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
         observer.observe(el);
     });
+
+    // Dark Mode Toggle Logic
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+    if (themeToggleBtn && themeToggleDarkIcon && themeToggleLightIcon) {
+        // Change the icons inside the button based on previous settings
+        if (document.documentElement.classList.contains('dark')) {
+            themeToggleLightIcon.classList.remove('hidden');
+        } else {
+            themeToggleDarkIcon.classList.remove('hidden');
+        }
+
+        themeToggleBtn.addEventListener('click', function() {
+            // toggle icons inside button
+            themeToggleDarkIcon.classList.toggle('hidden');
+            themeToggleLightIcon.classList.toggle('hidden');
+
+            // if is set in localStorage
+            if (localStorage.getItem('color-theme')) {
+                if (localStorage.getItem('color-theme') === 'light') {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('color-theme', 'dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('color-theme', 'light');
+                }
+            } else {
+                if (document.documentElement.classList.contains('dark')) {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('color-theme', 'light');
+                } else {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('color-theme', 'dark');
+                }
+            }
+        });
+    }
 });
 
-// Modal helpers
+// ─── Modal Helpers ──────────────────────────────────────────────
 function openModal(id) {
-    document.getElementById(id)?.classList.add('active');
+    const modal = document.getElementById(id);
+    if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        // Animate in
+        requestAnimationFrame(() => {
+            const card = modal.querySelector('[data-modal-card]');
+            if (card) {
+                card.style.opacity = '1';
+                card.style.transform = 'scale(1)';
+            }
+        });
+    }
 }
+
 function closeModal(id) {
-    document.getElementById(id)?.classList.remove('active');
+    const modal = document.getElementById(id);
+    if (modal) {
+        const card = modal.querySelector('[data-modal-card]');
+        if (card) {
+            card.style.opacity = '0';
+            card.style.transform = 'scale(0.95)';
+        }
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }, 150);
+    }
+}
+
+// Close modal on overlay click
+document.addEventListener('click', function(e) {
+    if (e.target.hasAttribute('data-modal-overlay')) {
+        const modal = e.target.closest('[id]');
+        if (modal) closeModal(modal.id);
+    }
+});
+
+// ─── Confirm Delete ─────────────────────────────────────────────
+function confirmDelete(formId, message) {
+    if (confirm(message || '¿Estás seguro de que deseas eliminar este registro?')) {
+        document.getElementById(formId).submit();
+    }
 }

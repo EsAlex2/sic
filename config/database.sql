@@ -223,6 +223,7 @@ CREATE TABLE unexca.datos_docentes (
 
 CREATE TABLE unexca.datos_estudiantes (
     id_estudiante SERIAL PRIMARY KEY,
+    id_estatus INTEGER REFERENCES unexca.estatus(id_estatus) ON DELETE CASCADE,
     id_persona INTEGER UNIQUE REFERENCES unexca.datos_personas(id_persona) ON DELETE CASCADE,
     id_trayecto INTEGER REFERENCES unexca.trayectos(id_trayecto) ON DELETE CASCADE,
     id_pnf INTEGER REFERENCES unexca.pnf(id_pnf) ON DELETE CASCADE,

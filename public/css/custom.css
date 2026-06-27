@@ -1,0 +1,62 @@
+/* ═══════════════════════════════════════════════════════════════
+   SIC — Custom CSS (complemento a Tailwind v4)
+   Solo animaciones y estilos que Tailwind no cubre nativamente
+   ═══════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+/* ─── Animaciones ────────────────────────────────────────────── */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-16px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes float {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(30px, -30px) scale(1.05); }
+    66% { transform: translate(-20px, 20px) scale(0.95); }
+}
+
+@keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.2); }
+    50% { box-shadow: 0 0 40px rgba(59, 130, 246, 0.4); }
+}
+
+.animate-fade { animation: fadeIn 0.4s ease-out; }
+.animate-slide { animation: slideInLeft 0.3s ease-out; }
+.animate-float { animation: float 20s ease-in-out infinite; }
+.animate-float-delay { animation: float 20s ease-in-out infinite; animation-delay: -10s; }
+.animate-pulse-glow { animation: pulse-glow 3s ease-in-out infinite; }
+
+/* ─── Scrollbar ──────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #334155; border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+/* ─── Transiciones suaves globales ───────────────────────────── */
+* { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+/* ─── Select arrow para dark mode ────────────────────────────── */
+select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding-right: 36px !important;
+}
+
+/* ─── Stat card top border gradient trick ────────────────────── */
+.stat-border-blue { border-top: 3px solid #3b82f6; }
+.stat-border-emerald { border-top: 3px solid #10b981; }
+.stat-border-purple { border-top: 3px solid #8b5cf6; }
+.stat-border-amber { border-top: 3px solid #f59e0b; }
+.stat-border-red { border-top: 3px solid #ef4444; }
+.stat-border-cyan { border-top: 3px solid #06b6d4; }
