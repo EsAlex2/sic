@@ -8,6 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="<?= url('public/css/custom.css') ?>">
     <style type="text/tailwindcss">
+        @custom-variant dark (&:where(.dark, .dark *));
         @theme {
             --color-slate-950: #020617;
             --color-slate-925: #0a101f;

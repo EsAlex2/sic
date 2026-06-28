@@ -21,7 +21,7 @@ class EstudiantesController
         $sede_id = $_GET['sede'] ?? '';
 
         // Obtener listado de estudiantes con filtros
-        $sql = "SELECT e.id_estudiante, e.fecha_ingreso, e.id_pnf, e.id_trayecto, e.id_sede, e.id_estatus,
+        $sql = "SELECT e.id_estudiante, e.fecha_ingreso, e.id_pnf, e.id_trayecto, e.id_sede, e.id_estatus, e.creado_en, e.actualizado_en,
                        p.nombres, p.apellidos, p.cedula_identidad, p.correo_personal,
                        pnf.nombre_pnf, s.nombre_sede, t.descripcion as trayecto,
                        est.nombre_estatus

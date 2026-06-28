@@ -11,44 +11,81 @@
     </button>
 </div>
 
+<!-- Dashboard Stats -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8 animate-fade">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-sm">
+        <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Total Docentes</p>
+        <p class="text-3xl font-bold text-slate-900 dark:text-slate-100 mt-2"><?= $stats['total'] ?></p>
+    </div>
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-sm">
+        <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Top PNF</p>
+        <p class="text-2xl font-bold text-blue-600 dark:text-blue-400 mt-2"><?php arsort($stats['por_pnf']); echo key($stats['por_pnf']) ?: '-'; ?></p>
+    </div>
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-sm">
+        <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Top Sede</p>
+        <p class="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-2"><?php arsort($stats['por_sede']); echo key($stats['por_sede']) ?: '-'; ?></p>
+    </div>
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-sm">
+        <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Top Asignatura</p>
+        <p class="text-2xl font-bold text-amber-600 dark:text-amber-400 mt-2"><?php arsort($stats['por_asignatura']); echo key($stats['por_asignatura']) ?: '-'; ?></p>
+    </div>
+</div>
+
 <!-- Table -->
 <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
     <div class="overflow-x-auto">
         <table class="w-full text-sm text-left">
             <thead class="text-xs text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/50 uppercase font-semibold">
                 <tr>
-                    <th class="px-6 py-4">Cédula</th>
-                    <th class="px-6 py-4">Nombre Completo</th>
-                    <th class="px-6 py-4">PNF (Área)</th>
-                    <th class="px-6 py-4">Sede Principal</th>
-                    <th class="px-6 py-4 text-center">Acciones</th>
+                    <th class="px-4 py-4">Cédula</th>
+                    <th class="px-4 py-4">Nombre Completo</th>
+                    <th class="px-4 py-4">PNF</th>
+                    <th class="px-4 py-4">Sede</th>
+                    <th class="px-4 py-4">Asignatura</th>
+                    <th class="px-4 py-4">Registro</th>
+                    <th class="px-4 py-4 text-center">Acciones</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
                 <?php if (empty($docentes)): ?>
                     <tr>
-                        <td colspan="5" class="px-6 py-8 text-center text-slate-500 dark:text-slate-400">
+                        <td colspan="7" class="px-6 py-8 text-center text-slate-500 dark:text-slate-400">
                             No hay docentes registrados.
                         </td>
                     </tr>
                 <?php else: ?>
                     <?php foreach ($docentes as $d): ?>
                         <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                            <td class="px-6 py-4 font-medium text-slate-900 dark:text-slate-100">
+                            <td class="px-4 py-4 font-medium text-slate-900 dark:text-slate-100">
                                 <?= htmlspecialchars($d['cedula_identidad']) ?>
                             </td>
-                            <td class="px-6 py-4 font-medium text-slate-900 dark:text-slate-100">
+                            <td class="px-4 py-4 font-medium text-slate-900 dark:text-slate-100">
                                 <?= htmlspecialchars($d['nombres'] . ' ' . $d['apellidos']) ?>
                             </td>
-                            <td class="px-6 py-4 text-slate-600 dark:text-slate-400">
+                            <td class="px-4 py-4 text-slate-600 dark:text-slate-400">
                                 <?= htmlspecialchars($d['nombre_pnf']) ?>
                             </td>
-                            <td class="px-6 py-4 text-slate-600 dark:text-slate-400">
+                            <td class="px-4 py-4 text-slate-600 dark:text-slate-400">
                                 <?= htmlspecialchars($d['nombre_sede']) ?>
                             </td>
-                            <td class="px-6 py-4">
+                            <td class="px-4 py-4 text-slate-600 dark:text-slate-400">
+                                <span class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-2.5 py-1 rounded-md text-xs font-semibold">
+                                    <?= htmlspecialchars($d['nombre_asignatura'] ?? 'Sin Asignatura') ?>
+                                </span>
+                            </td>
+                            <td class="px-4 py-4 text-slate-600 dark:text-slate-400">
+                                <div class="text-[9px] leading-tight whitespace-nowrap">
+                                    <span class="block">C: <?= $d['creado_en'] ? date('d/m/y H:i', strtotime($d['creado_en'])) : '-' ?></span>
+                                    <span class="block text-slate-400">A: <?= $d['actualizado_en'] ? date('d/m/y H:i', strtotime($d['actualizado_en'])) : '-' ?></span>
+                                </div>
+                            </td>
+                            <td class="px-4 py-4 whitespace-nowrap">
                                 <div class="flex items-center justify-center gap-2">
-                                    <button type="button" onclick="abrirModalEditar(<?= $d['id_docente'] ?>, '<?= $d['id_pnf'] ?? '' ?>', '<?= $d['id_sede'] ?? '' ?>', '<?= $d['fecha_ingreso'] ?>')"
+                                    <a href="<?= url("admin/docentes/ver/{$d['id_docente']}") ?>"
+                                       class="bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-300 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs hover:bg-slate-50 dark:hover:bg-slate-700 transition inline-flex items-center gap-1 shadow-sm" title="Ver Detalles">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                    </a>
+                                    <button type="button" onclick="abrirModalEditar(<?= $d['id_docente'] ?>, '<?= $d['id_pnf'] ?? '' ?>', '<?= $d['id_sede'] ?? '' ?>', '<?= $d['id_asignatura'] ?? '' ?>', '<?= $d['fecha_ingreso'] ?>')"
                                             class="border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400 rounded-lg px-2.5 py-1.5 text-xs hover:bg-slate-50 dark:hover:bg-slate-800 transition inline-flex items-center gap-1" title="Editar">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                     </button>
@@ -119,6 +156,17 @@
                     </div>
 
                     <div>
+                        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-1.5">Asignatura Principal</label>
+                        <select name="id_asignatura" required
+                                class="w-full px-4 py-2.5 bg-slate-100 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-700/50 rounded-xl text-slate-900 dark:text-slate-100 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition">
+                            <option value="">Seleccione Asignatura...</option>
+                            <?php foreach ($asignaturas as $a): ?>
+                                <option value="<?= $a['id_asignatura'] ?>"><?= htmlspecialchars($a['nombre']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div>
                         <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-1.5">Fecha de Ingreso</label>
                         <input type="date" name="fecha_ingreso" required value="<?= date('Y-m-d') ?>"
                                class="w-full px-4 py-2.5 bg-slate-100 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-700/50 rounded-xl text-slate-900 dark:text-slate-100 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition">
@@ -164,6 +212,15 @@
                             class="w-full px-4 py-2.5 bg-slate-100 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-700/50 rounded-xl text-slate-900 dark:text-slate-100 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition">
                         <?php foreach ($pnfs as $p): ?>
                             <option value="<?= $p['id_pnf'] ?>"><?= htmlspecialchars($p['nombre_pnf']) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-1.5">Asignatura Principal</label>
+                    <select name="id_asignatura" id="edit_id_asignatura" required
+                            class="w-full px-4 py-2.5 bg-slate-100 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-700/50 rounded-xl text-slate-900 dark:text-slate-100 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition">
+                        <?php foreach ($asignaturas as $a): ?>
+                            <option value="<?= $a['id_asignatura'] ?>"><?= htmlspecialchars($a['nombre']) ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -223,12 +280,13 @@ async function buscarPersona() {
     }
 }
 
-function abrirModalEditar(id, id_pnf, id_sede, fecha) {
+function abrirModalEditar(id, id_pnf, id_sede, id_asignatura, fecha) {
     document.getElementById('formEditarDocente').action = '<?= url("admin/docentes/actualizar/") ?>' + id;
     
     // Set selects
     if(id_pnf) document.getElementById('edit_id_pnf').value = id_pnf;
     if(id_sede) document.getElementById('edit_id_sede').value = id_sede;
+    if(id_asignatura) document.getElementById('edit_id_asignatura').value = id_asignatura;
     if(fecha) document.getElementById('edit_fecha_ingreso').value = fecha;
     
     document.getElementById('modalEditarDocente').classList.remove('hidden');

@@ -17,7 +17,6 @@
         <table class="w-full">
             <thead>
                 <tr>
-                    <th class="bg-slate-100 dark:bg-slate-800/60 text-slate-500 dark:text-slate-500 text-[11px] uppercase tracking-wider px-4 py-3 text-left">ID</th>
                     <th class="bg-slate-100 dark:bg-slate-800/60 text-slate-500 dark:text-slate-500 text-[11px] uppercase tracking-wider px-4 py-3 text-left">Código</th>
                     <th class="bg-slate-100 dark:bg-slate-800/60 text-slate-500 dark:text-slate-500 text-[11px] uppercase tracking-wider px-4 py-3 text-left">Fechas</th>
                     <th class="bg-slate-100 dark:bg-slate-800/60 text-slate-500 dark:text-slate-500 text-[11px] uppercase tracking-wider px-4 py-3 text-left">Estado</th>
@@ -30,7 +29,6 @@
                 <?php else: ?>
                     <?php foreach ($periodos as $p): ?>
                         <tr class="hover:bg-slate-50 dark:bg-slate-800/30 transition-colors">
-                            <td class="px-4 py-3 text-sm border-t border-slate-200 dark:border-slate-800/50 text-slate-500 dark:text-slate-500 font-mono"><?= $p['id_periodo'] ?></td>
                             <td class="px-4 py-3 text-sm border-t border-slate-200 dark:border-slate-800/50 font-bold text-blue-400"><?= htmlspecialchars($p['periodo']) ?></td>
                             <td class="px-4 py-3 text-sm border-t border-slate-200 dark:border-slate-800/50 text-slate-700 dark:text-slate-300">
                                 <?= date('d/m/Y', strtotime($p['fecha_inicio'])) ?> - 

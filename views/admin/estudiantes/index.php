@@ -101,37 +101,38 @@
         <table class="w-full text-sm text-left">
             <thead class="text-xs text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/50 uppercase font-semibold">
                 <tr>
-                    <th class="px-6 py-4">Cédula</th>
-                    <th class="px-6 py-4">Nombre Completo</th>
-                    <th class="px-6 py-4">PNF</th>
-                    <th class="px-6 py-4">Trayecto</th>
-                    <th class="px-6 py-4">Estatus</th>
-                    <th class="px-6 py-4 text-center">Acciones</th>
+                    <th class="px-4 py-4">Cédula</th>
+                    <th class="px-4 py-4">Nombre Completo</th>
+                    <th class="px-4 py-4">PNF</th>
+                    <th class="px-4 py-4">Trayecto</th>
+                    <th class="px-4 py-4">Estatus</th>
+                    <th class="px-4 py-4">Registro</th>
+                    <th class="px-4 py-4 text-center">Acciones</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
                 <?php if (empty($estudiantes)): ?>
                     <tr>
-                        <td colspan="5" class="px-6 py-8 text-center text-slate-500 dark:text-slate-400">
+                        <td colspan="6" class="px-6 py-8 text-center text-slate-500 dark:text-slate-400">
                             No hay estudiantes registrados.
                         </td>
                     </tr>
                 <?php else: ?>
                     <?php foreach ($estudiantes as $e): ?>
                         <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                            <td class="px-6 py-4 font-medium text-slate-900 dark:text-slate-100">
+                            <td class="px-4 py-4 font-medium text-slate-900 dark:text-slate-100">
                                 <?= htmlspecialchars($e['cedula_identidad']) ?>
                             </td>
-                            <td class="px-6 py-4 font-medium text-slate-900 dark:text-slate-100">
+                            <td class="px-4 py-4 font-medium text-slate-900 dark:text-slate-100">
                                 <?= htmlspecialchars($e['nombres'] . ' ' . $e['apellidos']) ?>
                             </td>
-                            <td class="px-6 py-4 text-slate-600 dark:text-slate-400">
+                            <td class="px-4 py-4 text-slate-600 dark:text-slate-400">
                                 <?= htmlspecialchars($e['nombre_pnf']) ?>
                             </td>
-                            <td class="px-6 py-4 text-slate-600 dark:text-slate-400">
+                            <td class="px-4 py-4 text-slate-600 dark:text-slate-400">
                                 <?= htmlspecialchars($e['trayecto']) ?>
                             </td>
-                            <td class="px-6 py-4">
+                            <td class="px-4 py-4">
                                 <?php
                                 $estatus_color = 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300';
                                 if (($e['nombre_estatus'] ?? '') === 'Cursando') $estatus_color = 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400';
@@ -142,7 +143,13 @@
                                     <?= htmlspecialchars($e['nombre_estatus'] ?? 'Cursando') ?>
                                 </span>
                             </td>
-                            <td class="px-6 py-4">
+                            <td class="px-4 py-4 text-slate-600 dark:text-slate-400">
+                                <div class="text-[9px] leading-tight whitespace-nowrap">
+                                    <span class="block">C: <?= $e['creado_en'] ? date('d/m/y H:i', strtotime($e['creado_en'])) : '-' ?></span>
+                                    <span class="block text-slate-400">A: <?= $e['actualizado_en'] ? date('d/m/y H:i', strtotime($e['actualizado_en'])) : '-' ?></span>
+                                </div>
+                            </td>
+                            <td class="px-4 py-4 whitespace-nowrap">
                                 <div class="flex items-center justify-center gap-2">
                                     <a href="<?= url('admin/estudiantes/ver/' . $e['id_estudiante']) ?>"
                                        class="border border-blue-300 dark:border-blue-700/50 text-blue-600 dark:text-blue-400 rounded-lg px-2.5 py-1.5 text-xs hover:bg-blue-50 dark:hover:bg-blue-900/30 transition inline-flex items-center gap-1" title="Ver Detalles">

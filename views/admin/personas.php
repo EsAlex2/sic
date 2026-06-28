@@ -10,88 +10,113 @@
     </button>
 </div>
 
+<!-- Controles y Estadísticas -->
+<div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4 animate-fade">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-5 py-3 rounded-2xl shadow-sm inline-flex items-center gap-4">
+        <div class="w-10 h-10 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl flex items-center justify-center">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+        </div>
+        <div>
+            <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Total Registradas</p>
+            <p class="text-xl font-bold text-slate-900 dark:text-slate-100"><?= count($personas) ?> Personas</p>
+        </div>
+    </div>
+    
+    <div class="relative w-full md:w-96">
+        <input type="text" id="buscadorPersonas" onkeyup="filtrarPersonas()" placeholder="Buscar por cédula, nombre, contacto..." 
+               class="w-full pl-11 pr-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 transition-all shadow-sm">
+        <svg class="w-5 h-5 text-slate-400 absolute left-4 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+    </div>
+</div>
+
 <!-- Tabla de Personas -->
 <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6">
-    <div class="rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
-        <table class="w-full">
+    <div class="rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-x-auto">
+        <table class="w-full min-w-[800px]" id="tablaPersonas">
             <thead>
                 <tr>
-                    <th class="bg-slate-100 dark:bg-slate-800/60 text-slate-500 dark:text-slate-500 text-[11px] uppercase tracking-wider px-4 py-3 text-left">Cédula</th>
-                    <th class="bg-slate-100 dark:bg-slate-800/60 text-slate-500 dark:text-slate-500 text-[11px] uppercase tracking-wider px-4 py-3 text-left">Nombres</th>
-                    <th class="bg-slate-100 dark:bg-slate-800/60 text-slate-500 dark:text-slate-500 text-[11px] uppercase tracking-wider px-4 py-3 text-left">Apellidos</th>
-                    <th class="bg-slate-100 dark:bg-slate-800/60 text-slate-500 dark:text-slate-500 text-[11px] uppercase tracking-wider px-4 py-3 text-left">Género</th>
-                    <th class="bg-slate-100 dark:bg-slate-800/60 text-slate-500 dark:text-slate-500 text-[11px] uppercase tracking-wider px-4 py-3 text-left">Contacto</th>
-                    <th class="bg-slate-100 dark:bg-slate-800/60 text-slate-500 dark:text-slate-500 text-[11px] uppercase tracking-wider px-4 py-3 text-left">Estado</th>
-                    <th class="bg-slate-100 dark:bg-slate-800/60 text-slate-500 dark:text-slate-500 text-[11px] uppercase tracking-wider px-4 py-3 text-left">¿Usuario?</th>
-                    <th class="bg-slate-100 dark:bg-slate-800/60 text-slate-500 dark:text-slate-500 text-[11px] uppercase tracking-wider px-4 py-3 text-center">Acciones</th>
+                    <th class="bg-slate-100 dark:bg-slate-800/60 text-slate-500 dark:text-slate-500 text-[10px] uppercase tracking-wider px-3 py-3 text-left">Cédula</th>
+                    <th class="bg-slate-100 dark:bg-slate-800/60 text-slate-500 dark:text-slate-500 text-[10px] uppercase tracking-wider px-3 py-3 text-left">Nombres</th>
+                    <th class="bg-slate-100 dark:bg-slate-800/60 text-slate-500 dark:text-slate-500 text-[10px] uppercase tracking-wider px-3 py-3 text-left">Apellidos</th>
+                    <th class="bg-slate-100 dark:bg-slate-800/60 text-slate-500 dark:text-slate-500 text-[10px] uppercase tracking-wider px-3 py-3 text-left">Género</th>
+                    <th class="bg-slate-100 dark:bg-slate-800/60 text-slate-500 dark:text-slate-500 text-[10px] uppercase tracking-wider px-3 py-3 text-left">Contacto</th>
+                    <th class="bg-slate-100 dark:bg-slate-800/60 text-slate-500 dark:text-slate-500 text-[10px] uppercase tracking-wider px-3 py-3 text-left">Estado</th>
+                    <th class="bg-slate-100 dark:bg-slate-800/60 text-slate-500 dark:text-slate-500 text-[10px] uppercase tracking-wider px-3 py-3 text-left">¿Usuario?</th>
+                    <th class="bg-slate-100 dark:bg-slate-800/60 text-slate-500 dark:text-slate-500 text-[10px] uppercase tracking-wider px-3 py-3 text-left">Registro</th>
+                    <th class="bg-slate-100 dark:bg-slate-800/60 text-slate-500 dark:text-slate-500 text-[10px] uppercase tracking-wider px-3 py-3 text-center">Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if (empty($personas)): ?>
                     <tr>
-                        <td colspan="8" class="px-4 py-8 text-sm text-center text-slate-500 dark:text-slate-500 border-t border-slate-200 dark:border-slate-800/50">
+                        <td colspan="9" class="px-4 py-8 text-sm text-center text-slate-500 dark:text-slate-500 border-t border-slate-200 dark:border-slate-800/50">
                             No hay personas registradas.
                         </td>
                     </tr>
                 <?php else: ?>
                     <?php foreach ($personas as $p): ?>
                         <tr class="hover:bg-slate-50 dark:bg-slate-800/30 transition-colors">
-                            <td class="px-4 py-3 text-sm border-t border-slate-200 dark:border-slate-800/50 font-bold text-blue-400">
+                            <td class="px-3 py-3 text-sm border-t border-slate-200 dark:border-slate-800/50 font-bold text-blue-400">
                                 <?= htmlspecialchars($p['cedula_identidad']) ?>
                             </td>
-                            <td class="px-4 py-3 text-sm border-t border-slate-200 dark:border-slate-800/50 text-slate-800 dark:text-slate-200">
+                            <td class="px-3 py-3 text-sm border-t border-slate-200 dark:border-slate-800/50 font-medium text-slate-900 dark:text-slate-100">
                                 <?= htmlspecialchars($p['nombres']) ?>
                             </td>
-                            <td class="px-4 py-3 text-sm border-t border-slate-200 dark:border-slate-800/50 text-slate-800 dark:text-slate-200">
+                            <td class="px-3 py-3 text-sm border-t border-slate-200 dark:border-slate-800/50 font-medium text-slate-900 dark:text-slate-100">
                                 <?= htmlspecialchars($p['apellidos']) ?>
                             </td>
-                            <td class="px-4 py-3 text-sm border-t border-slate-200 dark:border-slate-800/50 text-slate-700 dark:text-slate-300">
+                            <td class="px-3 py-3 text-sm border-t border-slate-200 dark:border-slate-800/50 text-slate-600 dark:text-slate-400">
                                 <?= htmlspecialchars($p['genero']) ?>
                             </td>
-                            <td class="px-4 py-3 text-sm border-t border-slate-200 dark:border-slate-800/50">
+                            <td class="px-3 py-3 text-sm border-t border-slate-200 dark:border-slate-800/50">
                                 <div class="text-slate-800 dark:text-slate-200 text-xs"><?= htmlspecialchars($p['correo_personal']) ?></div>
-                                <div class="text-slate-500 dark:text-slate-500 text-xs"><?= htmlspecialchars($p['telefono_personal'] ?? '') ?></div>
+                                <div class="text-slate-500 dark:text-slate-500 text-[11px]"><?= htmlspecialchars($p['telefono_personal'] ?? '') ?></div>
                             </td>
-                            <td class="px-4 py-3 text-sm border-t border-slate-200 dark:border-slate-800/50">
+                            <td class="px-3 py-3 text-sm border-t border-slate-200 dark:border-slate-800/50">
                                 <?php if ($p['nombre_estatus'] === 'Activo'): ?>
-                                    <span class="inline-flex px-2.5 py-0.5 text-xs font-semibold rounded-full bg-emerald-500/10 text-emerald-400">
+                                    <span class="inline-flex px-2 py-0.5 text-[11px] font-semibold rounded-full bg-emerald-500/10 text-emerald-400">
                                         <?= htmlspecialchars($p['nombre_estatus']) ?>
                                     </span>
                                 <?php else: ?>
-                                    <span class="inline-flex px-2.5 py-0.5 text-xs font-semibold rounded-full bg-amber-500/10 text-amber-400">
+                                    <span class="inline-flex px-2 py-0.5 text-[11px] font-semibold rounded-full bg-amber-500/10 text-amber-400">
                                         <?= htmlspecialchars($p['nombre_estatus']) ?>
                                     </span>
                                 <?php endif; ?>
                             </td>
-                            <td class="px-4 py-3 text-sm border-t border-slate-200 dark:border-slate-800/50">
+                            <td class="px-3 py-3 text-sm border-t border-slate-200 dark:border-slate-800/50">
                                 <?php if ($p['tiene_usuario'] > 0): ?>
-                                    <span class="inline-flex px-2.5 py-0.5 text-xs font-semibold rounded-full bg-emerald-500/10 text-emerald-400">Sí</span>
+                                    <span class="inline-flex px-2 py-0.5 text-[11px] font-semibold rounded-full bg-emerald-500/10 text-emerald-400">Sí</span>
                                 <?php else: ?>
-                                    <span class="inline-flex px-2.5 py-0.5 text-xs font-semibold rounded-full bg-red-500/10 text-red-400">No</span>
+                                    <span class="inline-flex px-2 py-0.5 text-[11px] font-semibold rounded-full bg-red-500/10 text-red-400">No</span>
                                 <?php endif; ?>
                             </td>
-                            <td class="px-4 py-3 text-sm border-t border-slate-200 dark:border-slate-800/50 text-center">
+                            <td class="px-3 py-3 text-sm border-t border-slate-200 dark:border-slate-800/50">
+                                <div class="text-[9px] text-slate-500 leading-tight whitespace-nowrap">
+                                    <span class="block">C: <?= $p['creado_en'] ? date('d/m/y H:i', strtotime($p['creado_en'])) : '-' ?></span>
+                                    <span class="block text-slate-400">A: <?= $p['actualizado_en'] ? date('d/m/y H:i', strtotime($p['actualizado_en'])) : '-' ?></span>
+                                </div>
+                            </td>
+                            <td class="px-3 py-3 text-sm border-t border-slate-200 dark:border-slate-800/50 text-center whitespace-nowrap">
                                 <div class="flex items-center justify-center gap-2">
                                     <!-- Ver -->
                                     <a href="<?= url('admin/personas/ver/' . $p['id_persona']) ?>"
                                        class="border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400 rounded-xl px-3 py-1.5 text-xs hover:bg-slate-50 dark:bg-slate-800 hover:text-slate-800 dark:text-slate-200 transition"
                                        title="Ver detalle">
-                                        👁 Ver
+                                        👁
                                     </a>
                                     <!-- Editar -->
                                     <a href="<?= url('admin/personas/editar/' . $p['id_persona']) ?>"
                                        class="border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400 rounded-xl px-3 py-1.5 text-xs hover:bg-slate-50 dark:bg-slate-800 hover:text-slate-800 dark:text-slate-200 transition"
                                        title="Editar persona">
-                                        ✏️ Editar
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                     </a>
                                     <?php if ($p['nombre_estatus'] === 'Activo'): ?>
-                                        <!-- Eliminar (soft delete) -->
+                                        <!-- Suspender (soft delete) -->
                                         <form action="<?= url('admin/personas/eliminar/' . $p['id_persona']) ?>" method="POST"
-                                              onsubmit="return confirm('¿Desactivar a <?= htmlspecialchars($p['nombres'] . ' ' . $p['apellidos']) ?>? Esta acción cambiará su estatus a Inactivo.');">
+                                              onsubmit="return confirm('¿Suspender a <?= htmlspecialchars($p['nombres'] . ' ' . $p['apellidos']) ?>? Esta acción cambiará su estatus a Inactivo.');">
                                             <button type="submit"
-                                                    class="border border-red-500/30 text-red-400 rounded-xl px-3 py-1.5 text-xs hover:bg-red-500/10 hover:text-red-300 transition"
-                                                    title="Desactivar persona">
-                                                Suspender
+                                                    class="bg-gradient-to-r from-red-600 to-red-700 text-white font-semibold rounded-lg px-2.5 py-1.5 text-xs hover:shadow-red-600/25 transition inline-flex items-center gap-1" title="Suspender">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
                                             </button>
                                         </form>
                                     <?php else: ?>
@@ -101,7 +126,7 @@
                                             <button type="submit"
                                                     class="border border-emerald-500/30 text-emerald-400 rounded-xl px-3 py-1.5 text-xs hover:bg-emerald-500/10 hover:text-emerald-300 transition"
                                                     title="Activar persona">
-                                                Activar
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                             </button>
                                         </form>
                                     <?php endif; ?>
@@ -201,3 +226,37 @@
         </form>
     </div>
 </div>
+
+<script>
+    function filtrarPersonas() {
+        let input = document.getElementById('buscadorPersonas');
+        let filter = input.value.toLowerCase();
+        let table = document.getElementById('tablaPersonas');
+        let tr = table.getElementsByTagName('tr');
+
+        for (let i = 1; i < tr.length; i++) {
+            if (tr[i].parentNode.tagName.toLowerCase() === 'thead') continue;
+            
+            let tds = tr[i].getElementsByTagName('td');
+            if (tds.length === 1 && tds[0].colSpan > 1) {
+                continue;
+            }
+            
+            if (tds.length > 0) {
+                let cedula = tds[0].textContent || tds[0].innerText;
+                let nombres = tds[1].textContent || tds[1].innerText;
+                let apellidos = tds[2].textContent || tds[2].innerText;
+                let genero = tds[3].textContent || tds[3].innerText;
+                let contacto = tds[4].textContent || tds[4].innerText;
+                
+                let combined = cedula + " " + nombres + " " + apellidos + " " + genero + " " + contacto;
+                
+                if (combined.toLowerCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+</script>

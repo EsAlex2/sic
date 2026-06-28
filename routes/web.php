@@ -41,13 +41,34 @@ $router->get('/admin/estudiantes/ver/{id}', ['EstudiantesController', 'ver'], [[
 
 // Docentes
 $router->get('/admin/docentes', ['DocentesController', 'index'], [['AuthMiddleware', 'soloAdmin']]);
+$router->get('/admin/docentes/ver/{id}', ['DocentesController', 'ver'], [['AuthMiddleware', 'soloAdmin']]);
 $router->post('/admin/docentes/crear', ['DocentesController', 'crear'], [['AuthMiddleware', 'soloAdmin']]);
 $router->post('/admin/docentes/actualizar/{id}', ['DocentesController', 'actualizar'], [['AuthMiddleware', 'soloAdmin']]);
 
+// Asignaturas
+$router->get('/admin/asignaturas', ['AsignaturasController', 'index'], [['AuthMiddleware', 'soloAdmin']]);
+$router->get('/admin/asignaturas/ver/{id}', ['AsignaturasController', 'ver'], [['AuthMiddleware', 'soloAdmin']]);
+$router->post('/admin/asignaturas/crear', ['AsignaturasController', 'crear'], [['AuthMiddleware', 'soloAdmin']]);
+$router->post('/admin/asignaturas/actualizar/{id}', ['AsignaturasController', 'actualizar'], [['AuthMiddleware', 'soloAdmin']]);
+
 $router->get('/admin/periodos', ['AdminController', 'periodos'], [['AuthMiddleware', 'soloAdmin']]);
 $router->post('/admin/periodos/crear', ['AdminController', 'crearPeriodo'], [['AuthMiddleware', 'soloAdmin']]);
+$router->post('/admin/periodos/toggle/{id}', ['AdminController', 'togglePeriodo'], [['AuthMiddleware', 'soloAdmin']]);
 $router->get('/admin/cargas', ['AdminController', 'cargas'], [['AuthMiddleware', 'soloAdmin']]);
-$router->post('/admin/cargas/crear', ['AdminController', 'crearCarga'], [['AuthMiddleware', 'soloAdmin']]);
+$router->get('/admin/cargas/clase', ['AdminController', 'crearClaseVista'], [['AuthMiddleware', 'soloAdmin']]);
+$router->post('/admin/cargas/clase/guardar', ['AdminController', 'guardarClase'], [['AuthMiddleware', 'soloAdmin']]);
+$router->post('/admin/cargas/guardar', ['AdminController', 'guardarCarga'], [['AuthMiddleware', 'soloAdmin']]);
+$router->post('/admin/cargas/actualizar/{id}', ['AdminController', 'actualizarCarga'], [['AuthMiddleware', 'soloAdmin']]);
+$router->get('/admin/cargas/ver/{id}', ['AdminController', 'verCarga'], [['AuthMiddleware', 'soloAdmin']]);
+
+$router->post('/admin/secciones/crear', ['AdminController', 'crearSeccion'], [['AuthMiddleware', 'soloAdmin']]);
+$router->post('/admin/secciones/actualizar/{id}', ['AdminController', 'actualizarSeccion'], [['AuthMiddleware', 'soloAdmin']]);
+$router->get('/admin/secciones/ver/{id}', ['AdminController', 'verSeccion'], [['AuthMiddleware', 'soloAdmin']]);
+
+// Horarios
+$router->get('/admin/horarios', ['HorariosController', 'index'], [['AuthMiddleware', 'soloAdmin']]);
+$router->post('/admin/horarios/guardar', ['HorariosController', 'guardar'], [['AuthMiddleware', 'soloAdmin']]);
+$router->post('/admin/horarios/eliminar/{id}', ['HorariosController', 'eliminar'], [['AuthMiddleware', 'soloAdmin']]);
 
 // Roles
 $router->get('/admin/roles', ['RolesController', 'index'], [['AuthMiddleware', 'soloAdmin']]);
@@ -96,5 +117,10 @@ $router->get('/finanzas/solvencias/{id}', ['FinanzasController', 'verificarSolve
 $router->get('/api/v1/usuarios', ['ApiUsuarioController', 'listar']);
 $router->get('/api/v1/usuarios/{id}', ['ApiUsuarioController', 'obtener']);
 $router->put('/api/v1/usuarios/{id}', ['ApiUsuarioController', 'actualizar']);
+
+// API interna para Cargas Académicas
+$router->get('/api/cargas/docentes', ['AdminController', 'apiDocentes'], [['AuthMiddleware', 'soloAdmin']]);
+$router->get('/api/cargas/asignaturas', ['AdminController', 'apiAsignaturas'], [['AuthMiddleware', 'soloAdmin']]);
+$router->get('/api/cargas/secciones', ['AdminController', 'apiSecciones'], [['AuthMiddleware', 'soloAdmin']]);
 $router->delete('/api/v1/usuarios/{id}', ['ApiUsuarioController', 'desactivar']);
 

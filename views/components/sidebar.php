@@ -49,6 +49,9 @@ function isActive(string $path): string {
             <a href="<?= url('admin/docentes') ?>" class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150 mb-0.5 <?= isActive('/admin/docentes') ?>">
                 <span class="text-lg w-5 text-center">👨‍🏫</span><span>Docentes</span>
             </a>
+            <a href="<?= url('admin/asignaturas') ?>" class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150 mb-0.5 <?= isActive('/admin/asignaturas') ?>">
+                <span class="text-lg w-5 text-center">📚</span><span>Asignaturas</span>
+            </a>
             <a href="<?= url('admin/periodos') ?>" class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150 mb-0.5 <?= isActive('/admin/periodos') ?>">
                 <span class="text-lg w-5 text-center">📅</span><span>Períodos Académicos</span>
             </a>

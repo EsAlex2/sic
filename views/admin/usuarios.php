@@ -47,10 +47,19 @@
     </div>
 </div>
 
+<!-- Buscador -->
+<div class="flex justify-end mb-4 animate-fade">
+    <div class="relative w-full md:w-96">
+        <input type="text" id="buscadorUsuarios" onkeyup="filtrarUsuarios()" placeholder="Buscar por cédula, nombre, correo o rol..." 
+               class="w-full pl-11 pr-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 transition-all shadow-sm">
+        <svg class="w-5 h-5 text-slate-400 absolute left-4 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+    </div>
+</div>
+
 <!-- Users Table -->
 <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden">
     <div class="overflow-x-auto">
-        <table class="w-full">
+        <table class="w-full" id="tablaUsuarios">
             <thead>
                 <tr class="bg-slate-100 dark:bg-slate-800/60">
                     <th class="text-center text-slate-500 dark:text-slate-500 text-[11px] uppercase tracking-wider px-4 py-3">Cédula</th>
@@ -58,13 +67,14 @@
                     <th class="text-center text-slate-500 dark:text-slate-500 text-[11px] uppercase tracking-wider px-4 py-3">Correo Institucional</th>
                     <th class="text-center text-slate-500 dark:text-slate-500 text-[11px] uppercase tracking-wider px-4 py-3">Rol</th>
                     <th class="text-center text-slate-500 dark:text-slate-500 text-[11px] uppercase tracking-wider px-4 py-3">Estatus</th>
+                    <th class="text-center text-slate-500 dark:text-slate-500 text-[11px] uppercase tracking-wider px-4 py-3">Registro</th>
                     <th class="text-center text-slate-500 dark:text-slate-500 text-[11px] uppercase tracking-wider px-4 py-3">Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if (empty($usuarios)): ?>
                     <tr>
-                        <td colspan="7" class="px-4 py-8 text-center text-sm text-slate-600">No hay usuarios registrados.</td>
+                        <td colspan="8" class="px-4 py-8 text-center text-sm text-slate-600">No hay usuarios registrados.</td>
                     </tr>
                 <?php else: ?>
                     <?php foreach ($usuarios as $u): ?>
@@ -92,7 +102,13 @@
                                     <span class="inline-flex px-2.5 py-0.5 text-xs font-semibold rounded-full bg-red-500/10 text-red-400">Inactivo</span>
                                 <?php endif; ?>
                             </td>
-                            <td class="px-4 py-3 text-sm border-t border-slate-200 dark:border-slate-800/50 text-center">
+                            <td class="px-4 py-3 text-sm border-t border-slate-200 dark:border-slate-800/50">
+                                <div class="text-[9px] text-slate-500 text-center leading-tight whitespace-nowrap">
+                                    <span class="block">C: <?= $u['creado_en'] ? date('d/m/y H:i', strtotime($u['creado_en'])) : '-' ?></span>
+                                    <span class="block text-slate-400">L: <?= $u['ultimo_login'] ? date('d/m/y H:i', strtotime($u['ultimo_login'])) : '-' ?></span>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3 text-sm border-t border-slate-200 dark:border-slate-800/50 text-center whitespace-nowrap">
                                 <div class="flex items-center gap-1.5 justify-center">
                                     <!-- Edit Button -->
                                     <a href="<?= url("admin/usuarios/editar/{$u['id_usuario']}") ?>"
@@ -245,6 +261,38 @@ async function buscarPersona() {
         }
     } catch (error) {
         divRes.innerHTML = '<span class="text-red-400">✗ Error de conexión</span>';
+    }
+}
+
+function filtrarUsuarios() {
+    let input = document.getElementById('buscadorUsuarios');
+    let filter = input.value.toLowerCase();
+    let table = document.getElementById('tablaUsuarios');
+    let tr = table.getElementsByTagName('tr');
+
+    for (let i = 1; i < tr.length; i++) {
+        if (tr[i].parentNode.tagName.toLowerCase() === 'thead') continue;
+        
+        let tds = tr[i].getElementsByTagName('td');
+        if (tds.length === 1 && tds[0].colSpan > 1) {
+            continue;
+        }
+        
+        if (tds.length > 0) {
+            let cedula = tds[0].textContent || tds[0].innerText;
+            let nombre = tds[1].textContent || tds[1].innerText;
+            let correo = tds[2].textContent || tds[2].innerText;
+            let rol = tds[3].textContent || tds[3].innerText;
+            let estatus = tds[4].textContent || tds[4].innerText;
+            
+            let combined = cedula + " " + nombre + " " + correo + " " + rol + " " + estatus;
+            
+            if (combined.toLowerCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+            } else {
+                tr[i].style.display = "none";
+            }
+        }
     }
 }
 </script>
