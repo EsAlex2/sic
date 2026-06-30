@@ -85,6 +85,7 @@
                             <option value="">Seleccione bloque de horario...</option>
                             <?php foreach($horarios as $h): ?>
                                 <option value="<?= $h['id_horario'] ?>" 
+                                        data-seccion="<?= $h['id_seccion'] ?>"
                                         data-idasig="<?= $h['id_asignatura'] ?>" 
                                         data-iddoc="<?= $h['id_docente'] ?>" 
                                         data-uc="<?= $h['unidades_credito'] ?>" 
@@ -189,6 +190,16 @@
             hiddenAsig.value = option.getAttribute('data-idasig');
             hiddenDoc.value = option.getAttribute('data-iddoc');
             descInput.value = option.getAttribute('data-desc');
+            
+            // Auto-seleccionar estudiantes visibles
+            const visibleRows = document.querySelectorAll('.estudiante-row:not([style*="display: none"])');
+            visibleRows.forEach(row => {
+                const checkbox = row.querySelector('.check-estudiante');
+                if (!checkbox.checked) {
+                    checkbox.checked = true;
+                }
+            });
+            actualizarContadorEstudiantes();
         } else {
             hiddenAsig.value = '';
             hiddenDoc.value = '';
@@ -249,6 +260,12 @@
             newRow.querySelector('.hidden-docente').name = `materias[${index}][id_docente]`;
             
             contenedorMaterias.appendChild(newRow);
+            // Aplicar el filtro de sección a la nueva fila si hay una sección seleccionada
+            const ssg = document.querySelector('select[name="id_seccion"]');
+            if (ssg && ssg.value !== "") {
+                ssg.dispatchEvent(new Event('change'));
+            }
+
             recalcularTotales();
         }
     });
@@ -298,7 +315,7 @@
                 row.querySelector('.check-estudiante').checked = false; // deseleccionar si se oculta
             }
         });
-
+        
         // 2. Filtrar Horarios
         const horariosSelects = document.querySelectorAll('.select-horario');
 
@@ -319,6 +336,38 @@
 
         actualizarContadorEstudiantes();
         recalcularTotales();
+    });
+
+    // Lógica de Filtrado de Horarios por Sección
+    const selectSeccionGlobal = document.querySelector('select[name="id_seccion"]');
+    selectSeccionGlobal.addEventListener('change', function() {
+        const selectedSeccion = this.value;
+        const selectsHorario = document.querySelectorAll('.select-horario');
+        
+        selectsHorario.forEach(select => {
+            // Guardar valor actual
+            const currentValue = select.value;
+            let currentStillValid = false;
+            
+            Array.from(select.options).forEach(option => {
+                if (option.value === "") return; // Ignorar el placeholder
+                
+                const optionSeccion = option.getAttribute('data-seccion');
+                // Mostrar si no tiene sección asignada o coincide con la seleccionada
+                if (!optionSeccion || optionSeccion === selectedSeccion) {
+                    option.style.display = '';
+                    if (option.value === currentValue) currentStillValid = true;
+                } else {
+                    option.style.display = 'none';
+                }
+            });
+            
+            // Si la opción seleccionada ya no es válida, resetear
+            if (currentValue !== "" && !currentStillValid) {
+                select.value = "";
+                seleccionarHorario(select);
+            }
+        });
     });
 
     function toggleCheckbox(row) {

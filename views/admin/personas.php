@@ -113,7 +113,7 @@
                                     <?php if ($p['nombre_estatus'] === 'Activo'): ?>
                                         <!-- Suspender (soft delete) -->
                                         <form action="<?= url('admin/personas/eliminar/' . $p['id_persona']) ?>" method="POST"
-                                              onsubmit="return confirm('¿Suspender a <?= htmlspecialchars($p['nombres'] . ' ' . $p['apellidos']) ?>? Esta acción cambiará su estatus a Inactivo.');">
+                                              data-confirm="¿Suspender a <?= htmlspecialchars($p['nombres'] . ' ' . $p['apellidos']) ?>? Esta acción cambiará su estatus a Inactivo.">
                                             <button type="submit"
                                                     class="bg-gradient-to-r from-red-600 to-red-700 text-white font-semibold rounded-lg px-2.5 py-1.5 text-xs hover:shadow-red-600/25 transition inline-flex items-center gap-1" title="Suspender">
                                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
@@ -122,7 +122,7 @@
                                     <?php else: ?>
                                         <!-- Activar -->
                                         <form action="<?= url('admin/personas/activar/' . $p['id_persona']) ?>" method="POST"
-                                              onsubmit="return confirm('¿Activar a <?= htmlspecialchars($p['nombres'] . ' ' . $p['apellidos']) ?>? Esta acción cambiará su estatus a Activo.');">
+                                              data-confirm="¿Activar a <?= htmlspecialchars($p['nombres'] . ' ' . $p['apellidos']) ?>? Esta acción cambiará su estatus a Activo.">
                                             <button type="submit"
                                                     class="border border-emerald-500/30 text-emerald-400 rounded-xl px-3 py-1.5 text-xs hover:bg-emerald-500/10 hover:text-emerald-300 transition"
                                                     title="Activar persona">

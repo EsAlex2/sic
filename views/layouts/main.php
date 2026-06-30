@@ -6,6 +6,8 @@
     <meta name="description" content="SIC — Sistema de Información y Control Académico de la UNEXCA">
     <title><?= $titulo ?? 'SIC' ?> — UNEXCA</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="<?= url('public/css/custom.css') ?>">
     <style type="text/tailwindcss">
         @custom-variant dark (&:where(.dark, .dark *));

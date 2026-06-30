@@ -117,7 +117,7 @@
                                     </a>
 
                                     <!-- Toggle Status Button -->
-                                    <form method="POST" action="<?= url("admin/usuarios/toggle/{$u['id_usuario']}") ?>" class="inline" onsubmit="return confirm('¿Cambiar estatus de este usuario?')">
+                                    <form method="POST" action="<?= url("admin/usuarios/toggle/{$u['id_usuario']}") ?>" class="inline" data-confirm="¿Cambiar estatus de este usuario?">
                                         <?php if ($u['nombre_estatus'] === 'Activo'): ?>
                                             <button type="submit"
                                                     class="bg-gradient-to-r from-red-600 to-red-700 text-white font-semibold rounded-lg px-2.5 py-1.5 text-xs hover:shadow-red-600/25 transition inline-flex items-center gap-1" title="Desactivar">

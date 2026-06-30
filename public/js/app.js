@@ -129,9 +129,30 @@ document.addEventListener('click', function(e) {
     }
 });
 
-// ─── Confirm Delete ─────────────────────────────────────────────
-function confirmDelete(formId, message) {
-    if (confirm(message || '¿Estás seguro de que deseas eliminar este registro?')) {
-        document.getElementById(formId).submit();
+// ─── Confirm Delete Global (SweetAlert2) ─────────────────────────
+document.addEventListener('submit', function(e) {
+    if (e.target.hasAttribute('data-confirm')) {
+        e.preventDefault();
+        const form = e.target;
+        const message = form.getAttribute('data-confirm');
+        const isDark = document.documentElement.classList.contains('dark');
+        
+        Swal.fire({
+            title: '¿Confirmar acción?',
+            text: message,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3b82f6',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: 'Sí, continuar',
+            cancelButtonText: 'Cancelar',
+            background: isDark ? '#1e293b' : '#ffffff',
+            color: isDark ? '#f8fafc' : '#1e293b'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.removeAttribute('data-confirm');
+                form.submit();
+            }
+        });
     }
-}
+});

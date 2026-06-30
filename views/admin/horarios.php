@@ -184,8 +184,8 @@
                                             </div>
                                         </td>
                                         <td class="px-4 py-3 text-right">
-                                            <form action="<?= url('admin/horarios/eliminar/' . $h['id_horario']) ?>" method="POST" onsubmit="return confirm('¿Seguro que deseas eliminar este horario?');" class="inline">
-                                                <button type="submit" class="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                                            <form action="<?= url('admin/horarios/eliminar/' . $h['id_horario']) ?>" method="POST" class="inline form-eliminar-horario">
+                                                <button type="button" onclick="confirmarEliminacion(this)" class="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" title="Eliminar">
                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                                 </button>
                                             </form>
@@ -252,5 +252,27 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+function confirmarEliminacion(btn) {
+    const form = btn.closest('form');
+    const isDark = document.documentElement.classList.contains('dark');
+    
+    Swal.fire({
+        title: '¿Eliminar horario?',
+        text: "Esta acción no se puede deshacer.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar',
+        background: isDark ? '#1e293b' : '#ffffff',
+        color: isDark ? '#f8fafc' : '#1e293b'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            form.submit();
+        }
+    });
+}
 </script>
 

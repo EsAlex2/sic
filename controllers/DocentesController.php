@@ -158,19 +158,21 @@ class DocentesController
             return;
         }
 
-        // 2. Obtener horarios (materias asignadas en clases reales)
+        // 2. Obtener horarios (materias asignadas en clases reales del periodo activo)
         $stmtHorarios = $this->conexion->prepare("
             SELECT h.cod_horario, h.hora_inicio, h.hora_fin,
                    a.nombre as nombre_asignatura, a.codigo as codigo_asignatura,
                    sec.cod_seccion, au.nombre_aula, au.piso, au.nro_aula,
                    tr.descripcion as trayecto_desc
-            FROM unexca.horarios h
-            JOIN unexca.asignatura a ON a.id_asignatura = h.id_asignatura
-            JOIN unexca.secciones sec ON sec.id_seccion = h.id_seccion
-            JOIN unexca.aulas au ON au.id_aula = h.id_aula
-            JOIN unexca.trayectos tr ON tr.id_trayecto = h.id_trayecto
-            WHERE h.id_docente = :id
-            ORDER BY h.hora_inicio ASC
+            FROM unexca.carga_academica ca
+            JOIN unexca.periodo_academico pa ON pa.id_periodo = ca.id_periodo
+            JOIN unexca.asignatura a ON a.id_asignatura = ca.id_asignatura
+            JOIN unexca.secciones sec ON sec.id_seccion = ca.id_seccion
+            LEFT JOIN unexca.horarios h ON h.id_docente = ca.id_docente AND h.id_asignatura = ca.id_asignatura AND h.id_seccion = ca.id_seccion
+            LEFT JOIN unexca.aulas au ON au.id_aula = h.id_aula
+            LEFT JOIN unexca.trayectos tr ON tr.id_trayecto = h.id_trayecto
+            WHERE ca.id_docente = :id AND pa.estado = '1'
+            ORDER BY h.hora_inicio ASC NULLS LAST, a.nombre ASC
         ");
         $stmtHorarios->execute([':id' => $id]);
         $horarios = $stmtHorarios->fetchAll();

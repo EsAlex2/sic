@@ -350,35 +350,27 @@ class AdminController
     public function cargas(): void
     {
         $stmt = $this->conexion->query("
-            SELECT ca.id_periodo, ca.id_docente, ca.id_asignatura, ca.id_sede,
+            SELECT ca.id_periodo, ca.id_seccion, ca.id_sede,
                    MIN(ca.id_carga) as id_carga,
-                   COUNT(ca.id_seccion) as total_secciones,
+                   COUNT(DISTINCT ca.id_asignatura) as total_asignaturas,
+                   COUNT(DISTINCT ca.id_docente) as total_docentes,
                    pa.periodo as periodo,
-                   dd.nombres as docente_nombres, dd.apellidos as docente_apellidos,
-                   da.nombre as asignatura,
+                   sec.cod_seccion as seccion,
+                   t.turno as turno,
                    s.nombre_sede as sede
             FROM unexca.carga_academica ca
             JOIN unexca.periodo_academico pa ON pa.id_periodo = ca.id_periodo
-            JOIN unexca.datos_docentes doc ON doc.id_docente = ca.id_docente
-            JOIN unexca.datos_personas dd ON dd.id_persona = doc.id_persona
-            JOIN unexca.asignatura da ON da.id_asignatura = ca.id_asignatura
+            JOIN unexca.secciones sec ON sec.id_seccion = ca.id_seccion
+            LEFT JOIN unexca.turnos t ON t.id_turno = sec.id_turno
             JOIN unexca.sedes_unexca s ON s.id_sede = ca.id_sede
-            GROUP BY ca.id_periodo, ca.id_docente, ca.id_asignatura, ca.id_sede, pa.periodo, dd.nombres, dd.apellidos, da.nombre, s.nombre_sede
-            ORDER BY MIN(ca.id_carga) DESC
+            GROUP BY ca.id_periodo, ca.id_seccion, ca.id_sede, pa.periodo, sec.cod_seccion, t.turno, s.nombre_sede
+            ORDER BY ca.id_periodo DESC, sec.cod_seccion ASC
         ");
         $cargas = $stmt->fetchAll();
 
         // Obtener todas las secciones para la nueva pestaña de gestión
         $stmtSec = $this->conexion->query("SELECT * FROM unexca.secciones ORDER BY id_seccion DESC");
         $secciones = $stmtSec->fetchAll();
-
-        // Obtener periodos activos para el select de asignar carga
-        $stmtPer = $this->conexion->query("SELECT id_periodo, periodo FROM unexca.periodo_academico WHERE estado = '1' ORDER BY id_periodo DESC");
-        $periodos = $stmtPer->fetchAll();
-
-        // Obtener sedes
-        $stmtSedes = $this->conexion->query("SELECT * FROM unexca.sedes_unexca ORDER BY nombre_sede");
-        $sedes = $stmtSedes->fetchAll();
 
         // Estadísticas
         $totalCargas = count($cargas);
@@ -390,8 +382,6 @@ class AdminController
             'titulo' => 'Gestión de Carga Académica y Secciones',
             'cargas' => $cargas,
             'secciones' => $secciones,
-            'periodos' => $periodos,
-            'sedes' => $sedes,
             'stats' => [
                 'cargas' => $totalCargas,
                 'secciones' => $totalSecciones,
@@ -401,45 +391,7 @@ class AdminController
         ]);
     }
 
-    public function crearCarga(): void
-    {
-        $id_periodo    = $_POST['id_periodo'] ?? '';
-        $id_docente    = $_POST['id_docente'] ?? '';
-        $id_asignatura = $_POST['id_asignatura'] ?? '';
-        $id_seccion    = $_POST['id_seccion'] ?? '';
-        $id_sede       = $_POST['id_sede'] ?? '';
 
-        if (empty($id_periodo) || empty($id_docente) || empty($id_asignatura) || empty($id_seccion) || empty($id_sede)) {
-            setFlash('error', 'Todos los campos son obligatorios.');
-            redirect('admin/cargas');
-            return;
-        }
-
-        try {
-            // Get active estatus
-            $stmtEstatus = $this->conexion->query("SELECT id_estatus FROM unexca.estatus WHERE nombre_estatus = 'Activo' LIMIT 1");
-            $idEstatus = $stmtEstatus->fetch()['id_estatus'] ?? 1;
-
-            $stmt = $this->conexion->prepare("
-                INSERT INTO unexca.carga_academica (id_periodo, id_docente, id_asignatura, id_seccion, id_sede, id_estatus)
-                VALUES (:id_periodo, :id_docente, :id_asignatura, :id_seccion, :id_sede, :id_estatus)
-            ");
-            $stmt->execute([
-                ':id_periodo'    => $id_periodo,
-                ':id_docente'    => $id_docente,
-                ':id_asignatura' => $id_asignatura,
-                ':id_seccion'    => $id_seccion,
-                ':id_sede'       => $id_sede,
-                ':id_estatus'    => $idEstatus
-            ]);
-
-            setFlash('success', 'Carga académica asignada exitosamente.');
-        } catch (PDOException $e) {
-            setFlash('error', 'Error al asignar carga: ' . $e->getMessage());
-        }
-
-        redirect('admin/cargas');
-    }
 
     public function crearClaseVista(): void
     {
@@ -476,13 +428,21 @@ class AdminController
         $pnfs = $this->conexion->query("SELECT * FROM unexca.pnf ORDER BY nombre_pnf")->fetchAll();
         $turnos = $this->conexion->query("SELECT * FROM unexca.turnos ORDER BY id_turno")->fetchAll();
 
-        // Obtener horarios creados con sus asignaturas y docentes
+        // Obtener horarios creados con sus asignaturas y docentes que NO estén ya en la carga académica del período activo
         $stmtHorarios = $this->conexion->query("
             SELECT h.*, a.nombre as asignatura_nombre, a.unidades_credito, dp.nombres, dp.apellidos, doc.id_pnf 
             FROM unexca.horarios h
             LEFT JOIN unexca.asignatura a ON a.id_asignatura = h.id_asignatura
             LEFT JOIN unexca.datos_docentes doc ON doc.id_docente = h.id_docente
             LEFT JOIN unexca.datos_personas dp ON dp.id_persona = doc.id_persona
+            WHERE NOT EXISTS (
+                SELECT 1 FROM unexca.carga_academica ca
+                JOIN unexca.periodo_academico pa ON pa.id_periodo = ca.id_periodo
+                WHERE pa.estado = '1' 
+                  AND ca.id_docente = h.id_docente 
+                  AND ca.id_asignatura = h.id_asignatura 
+                  AND ca.id_seccion = h.id_seccion
+            )
             ORDER BY h.dia_semana, h.hora_inicio
         ");
         $horarios = $stmtHorarios->fetchAll();
@@ -618,62 +578,19 @@ class AdminController
         }
     }
 
-    public function actualizarCarga(int $id): void
-    {
-        $id_periodo    = $_POST['id_periodo'] ?? '';
-        $id_docente    = $_POST['id_docente'] ?? '';
-        $id_asignatura = $_POST['id_asignatura'] ?? '';
-        $id_seccion    = $_POST['id_seccion'] ?? '';
-        $id_sede       = $_POST['id_sede'] ?? '';
 
-        if (empty($id_periodo) || empty($id_docente) || empty($id_asignatura) || empty($id_seccion) || empty($id_sede)) {
-            setFlash('error', 'Todos los campos son obligatorios para actualizar la carga.');
-            redirect('admin/cargas');
-            return;
-        }
-
-        try {
-            $stmt = $this->conexion->prepare("
-                UPDATE unexca.carga_academica 
-                SET id_periodo = :id_periodo, 
-                    id_docente = :id_docente, 
-                    id_asignatura = :id_asignatura, 
-                    id_seccion = :id_seccion, 
-                    id_sede = :id_sede
-                WHERE id_carga = :id
-            ");
-            $stmt->execute([
-                ':id_periodo'    => $id_periodo,
-                ':id_docente'    => $id_docente,
-                ':id_asignatura' => $id_asignatura,
-                ':id_seccion'    => $id_seccion,
-                ':id_sede'       => $id_sede,
-                ':id'            => $id
-            ]);
-            setFlash('success', 'Carga académica actualizada exitosamente.');
-        } catch (PDOException $e) {
-            setFlash('error', 'Error al actualizar carga: ' . $e->getMessage());
-        }
-
-        redirect('admin/cargas');
-    }
 
     public function verCarga(int $id): void
     {
-        // Obtener detalles completos de la carga académica
+        // Obtener detalles base de la cohorte usando id_carga
         $stmtCarga = $this->conexion->prepare("
-            SELECT ca.*,
-                   pa.periodo as periodo,
-                   dd.nombres as docente_nombres, dd.apellidos as docente_apellidos, dd.cedula_identidad as docente_cedula,
-                   da.nombre as asignatura, da.codigo as asignatura_codigo,
-                   ds.cod_seccion as seccion,
-                   s.nombre_sede as sede
+            SELECT ca.id_periodo, ca.id_seccion, ca.id_sede,
+                   pa.periodo, sec.cod_seccion as seccion, s.nombre_sede as sede,
+                   t.turno
             FROM unexca.carga_academica ca
             JOIN unexca.periodo_academico pa ON pa.id_periodo = ca.id_periodo
-            JOIN unexca.datos_docentes doc ON doc.id_docente = ca.id_docente
-            JOIN unexca.datos_personas dd ON dd.id_persona = doc.id_persona
-            JOIN unexca.asignatura da ON da.id_asignatura = ca.id_asignatura
-            JOIN unexca.secciones ds ON ds.id_seccion = ca.id_seccion
+            JOIN unexca.secciones sec ON sec.id_seccion = ca.id_seccion
+            LEFT JOIN unexca.turnos t ON t.id_turno = sec.id_turno
             JOIN unexca.sedes_unexca s ON s.id_sede = ca.id_sede
             WHERE ca.id_carga = :id
         ");
@@ -681,67 +598,72 @@ class AdminController
         $baseCarga = $stmtCarga->fetch();
 
         if (!$baseCarga) {
-            setFlash('error', 'Carga académica no encontrada.');
+            setFlash('error', 'Cohorte no encontrada.');
             redirect('admin/cargas');
             return;
         }
 
-        // Buscar todas las secciones que coincidan con la agrupación (docente + materia + periodo + sede)
-        $stmtSecciones = $this->conexion->prepare("
-            SELECT ca.id_carga, ca.id_seccion, ds.cod_seccion as seccion
+        // Obtener todas las materias/docentes de esta cohorte
+        $stmtMaterias = $this->conexion->prepare("
+            SELECT ca.id_carga, ca.id_asignatura, ca.id_docente,
+                   da.nombre as asignatura, da.codigo as asignatura_codigo,
+                   dp.nombres as docente_nombres, dp.apellidos as docente_apellidos, dp.cedula_identidad as docente_cedula
             FROM unexca.carga_academica ca
-            JOIN unexca.secciones ds ON ds.id_seccion = ca.id_seccion
-            WHERE ca.id_docente = :id_docente
-              AND ca.id_asignatura = :id_asignatura
-              AND ca.id_periodo = :id_periodo
+            JOIN unexca.asignatura da ON da.id_asignatura = ca.id_asignatura
+            JOIN unexca.datos_docentes doc ON doc.id_docente = ca.id_docente
+            JOIN unexca.datos_personas dp ON dp.id_persona = doc.id_persona
+            WHERE ca.id_periodo = :id_periodo 
+              AND ca.id_seccion = :id_seccion 
               AND ca.id_sede = :id_sede
-            ORDER BY ds.cod_seccion
         ");
-        $stmtSecciones->execute([
-            ':id_docente' => $baseCarga['id_docente'],
-            ':id_asignatura' => $baseCarga['id_asignatura'],
+        $stmtMaterias->execute([
             ':id_periodo' => $baseCarga['id_periodo'],
+            ':id_seccion' => $baseCarga['id_seccion'],
             ':id_sede' => $baseCarga['id_sede']
         ]);
-        $seccionesList = $stmtSecciones->fetchAll();
+        $materiasList = $stmtMaterias->fetchAll();
 
-        // Obtener todos los alumnos de esas secciones
-        $seccionesCargaIds = array_column($seccionesList, 'id_carga');
+        // Obtener alumnos inscritos en esta cohorte (usamos las cargas para ver inscripciones)
+        $cargasIds = array_column($materiasList, 'id_carga');
         $inscritos = [];
-        if (!empty($seccionesCargaIds)) {
-            $inQuery = implode(',', array_map('intval', $seccionesCargaIds));
-            $stmtInscritos = $this->conexion->prepare("
-                SELECT i.id_inscripcion, i.id_carga, i.creado_en as fecha_inscripcion,
-                       p.cedula_identidad as cedula, p.nombres, p.apellidos,
-                       e.nombre_estatus
-                FROM unexca.inscripcion i
-                JOIN unexca.datos_estudiantes de ON de.id_estudiante = i.id_estudiante
-                JOIN unexca.datos_personas p ON p.id_persona = de.id_persona
-                LEFT JOIN unexca.estatus e ON e.id_estatus = i.id_estatus
-                WHERE i.id_carga IN ($inQuery)
-                ORDER BY p.apellidos, p.nombres
-            ");
+        if (!empty($cargasIds)) {
+            $inQuery = implode(',', array_map('intval', $cargasIds));
+            // Intentar consultar en inscripcion_asignatura, si no existe o algo, usamos la que estaba (inscripcion)
+            // Ya que el modulo original usaba 'unexca.inscripcion' para consultar y 'unexca.inscripcion_asignatura' al guardar.
+            // Tratamos inscripcion_asignatura primero:
             try {
-                $stmtInscritos->execute();
+                $stmtInscritos = $this->conexion->query("
+                    SELECT DISTINCT de.id_estudiante,
+                           p.cedula_identidad as cedula, p.nombres, p.apellidos
+                    FROM unexca.inscripcion_asignatura i
+                    JOIN unexca.datos_estudiantes de ON de.id_estudiante = i.id_estudiante
+                    JOIN unexca.datos_personas p ON p.id_persona = de.id_persona
+                    WHERE i.id_carga IN ($inQuery)
+                    ORDER BY p.apellidos, p.nombres
+                ");
                 $inscritos = $stmtInscritos->fetchAll();
-            } catch (PDOException $e) {}
-        }
-
-        $seccionesConAlumnos = [];
-        foreach ($seccionesList as $sec) {
-            $sec['alumnos'] = [];
-            foreach ($inscritos as $ins) {
-                if ($ins['id_carga'] == $sec['id_carga']) {
-                    $sec['alumnos'][] = $ins;
-                }
+            } catch (PDOException $e) {
+                // Si falla, caemos en unexca.inscripcion como estaba
+                try {
+                    $stmtInscritos = $this->conexion->query("
+                        SELECT DISTINCT de.id_estudiante,
+                               p.cedula_identidad as cedula, p.nombres, p.apellidos
+                        FROM unexca.inscripcion i
+                        JOIN unexca.datos_estudiantes de ON de.id_estudiante = i.id_estudiante
+                        JOIN unexca.datos_personas p ON p.id_persona = de.id_persona
+                        WHERE i.id_carga IN ($inQuery)
+                        ORDER BY p.apellidos, p.nombres
+                    ");
+                    $inscritos = $stmtInscritos->fetchAll();
+                } catch (PDOException $ex) {}
             }
-            $seccionesConAlumnos[] = $sec;
         }
 
         renderView('admin/cargas_ver', [
-            'titulo' => 'Detalles de Carga Académica',
-            'carga' => $baseCarga,
-            'secciones_agrupadas' => $seccionesConAlumnos
+            'titulo' => 'Detalles de la Cohorte',
+            'cohorte' => $baseCarga,
+            'materias' => $materiasList,
+            'alumnos' => $inscritos
         ]);
     }
 
@@ -840,13 +762,14 @@ class AdminController
         // Obtener lista de estudiantes inscritos
         $inscritos = [];
         try {
+            // Intentar primero con inscripcion_asignatura
             $stmtInscritos = $this->conexion->prepare("
-                SELECT i.id_inscripcion, i.creado_en as fecha_inscripcion,
+                SELECT i.id_inscripcion_asig as id_inscripcion, i.fecha_inscripcion,
                        p.cedula_identidad as cedula, p.nombres, p.apellidos,
                        e.nombre_estatus,
                        pa.periodo as periodo,
                        da.nombre as asignatura
-                FROM unexca.inscripcion i
+                FROM unexca.inscripcion_asignatura i
                 JOIN unexca.carga_academica ca ON ca.id_carga = i.id_carga
                 JOIN unexca.periodo_academico pa ON pa.id_periodo = ca.id_periodo
                 JOIN unexca.asignatura da ON da.id_asignatura = ca.id_asignatura
@@ -858,7 +781,29 @@ class AdminController
             ");
             $stmtInscritos->execute([':id' => $id]);
             $inscritos = $stmtInscritos->fetchAll();
-        } catch (PDOException $e) {}
+        } catch (PDOException $e) {
+            // Si falla, caemos en inscripcion
+            try {
+                $stmtInscritos = $this->conexion->prepare("
+                    SELECT i.id_inscripcion, i.creado_en as fecha_inscripcion,
+                           p.cedula_identidad as cedula, p.nombres, p.apellidos,
+                           e.nombre_estatus,
+                           pa.periodo as periodo,
+                           da.nombre as asignatura
+                    FROM unexca.inscripcion i
+                    JOIN unexca.carga_academica ca ON ca.id_carga = i.id_carga
+                    JOIN unexca.periodo_academico pa ON pa.id_periodo = ca.id_periodo
+                    JOIN unexca.asignatura da ON da.id_asignatura = ca.id_asignatura
+                    JOIN unexca.datos_estudiantes de ON de.id_estudiante = i.id_estudiante
+                    JOIN unexca.datos_personas p ON p.id_persona = de.id_persona
+                    LEFT JOIN unexca.estatus e ON e.id_estatus = i.id_estatus
+                    WHERE ca.id_seccion = :id
+                    ORDER BY pa.id_periodo DESC, p.apellidos, p.nombres
+                ");
+                $stmtInscritos->execute([':id' => $id]);
+                $inscritos = $stmtInscritos->fetchAll();
+            } catch (PDOException $ex) {}
+        }
 
         renderView('admin/secciones_ver', [
             'titulo' => 'Detalles de la Sección',

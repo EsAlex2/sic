@@ -62,7 +62,7 @@
                             <td class="px-4 py-4 font-medium text-slate-900 dark:text-slate-100">
                                 <?= htmlspecialchars($d['nombres'] . ' ' . $d['apellidos']) ?>
                             </td>
-                            <td class="px-4 py-4 text-slate-600 dark:text-slate-400">
+                            <td class="px-3 py-4 text-slate-600 dark:text-slate-400">
                                 <?= htmlspecialchars($d['nombre_pnf']) ?>
                             </td>
                             <td class="px-4 py-4 text-slate-600 dark:text-slate-400">

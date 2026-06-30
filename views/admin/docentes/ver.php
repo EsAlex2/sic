@@ -118,7 +118,7 @@
                                     <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                                         <td class="px-6 py-4">
                                             <p class="font-medium text-slate-900 dark:text-slate-100"><?= htmlspecialchars($h['nombre_asignatura']) ?></p>
-                                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5"><?= htmlspecialchars($h['trayecto_desc']) ?></p>
+                                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5"><?= htmlspecialchars($h['trayecto_desc'] ?? 'Sin trayecto específico') ?></p>
                                         </td>
                                         <td class="px-6 py-4">
                                             <span class="bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-bold px-2 py-0.5 rounded-md border border-blue-200 dark:border-blue-800">
@@ -127,11 +127,15 @@
                                         </td>
                                         <td class="px-6 py-4">
                                             <p class="text-slate-700 dark:text-slate-300 font-medium">
-                                                <?= date('h:i A', strtotime($h['hora_inicio'])) ?> - <?= date('h:i A', strtotime($h['hora_fin'])) ?>
+                                                <?php if ($h['hora_inicio'] && $h['hora_fin']): ?>
+                                                    <?= date('h:i A', strtotime($h['hora_inicio'])) ?> - <?= date('h:i A', strtotime($h['hora_fin'])) ?>
+                                                <?php else: ?>
+                                                    <span class="text-slate-400 italic">Por definir</span>
+                                                <?php endif; ?>
                                             </p>
                                         </td>
                                         <td class="px-6 py-4 text-slate-600 dark:text-slate-400">
-                                            <?= htmlspecialchars($h['nombre_aula']) ?>
+                                            <?= htmlspecialchars($h['nombre_aula'] ?? 'Sin aula asignada') ?>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>

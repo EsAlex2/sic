@@ -67,7 +67,7 @@
                                     </button>
 
                                     <!-- Botón Toggle Estatus -->
-                                    <form method="POST" action="<?= url("admin/roles/toggle/{$r['id_tipo']}") ?>" class="inline" onsubmit="return confirm('¿Cambiar estatus de este rol?')">
+                                    <form method="POST" action="<?= url("admin/roles/toggle/{$r['id_tipo']}") ?>" class="inline" data-confirm="¿Cambiar estatus de este rol?">
                                         <?php if ($r['nombre_estatus'] === 'Activo'): ?>
                                             <button type="submit"
                                                     class="bg-gradient-to-r from-amber-500 to-amber-600 text-white font-semibold rounded-lg px-2.5 py-1.5 text-xs hover:shadow-amber-500/25 transition inline-flex items-center gap-1" title="Suspender">

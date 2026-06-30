@@ -67,7 +67,7 @@
                                     </button>
 
                                     <!-- Botón Toggle Estatus -->
-                                    <form method="POST" action="<?= url("admin/permisos/toggle/{$p['id_permiso']}") ?>" class="inline" onsubmit="return confirm('¿Cambiar estatus de este permiso?')">
+                                    <form method="POST" action="<?= url("admin/permisos/toggle/{$p['id_permiso']}") ?>" class="inline" data-confirm="¿Cambiar estatus de este permiso?">
                                         <?php if ($p['nombre_estatus'] === 'Activo'): ?>
                                             <button type="submit"
                                                     class="bg-gradient-to-r from-amber-500 to-amber-600 text-white font-semibold rounded-lg px-2.5 py-1.5 text-xs hover:shadow-amber-500/25 transition inline-flex items-center gap-1" title="Suspender">
